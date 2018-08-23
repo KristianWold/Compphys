@@ -1,1 +1,2 @@
-Test test
+a = 'test'
+print(a)
