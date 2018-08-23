@@ -1,2 +1,2 @@
 # compphys
-FYS3150, test test
+FYS3150, test test, nono
