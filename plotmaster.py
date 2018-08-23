@@ -14,7 +14,7 @@ def velfield(n=20):
     return x, y, u, v
 
 
-n = 100
+n = 1000
 x, y, u, v = velfield(n)
 plt.axis('off')
 plt.plot(u, v)
