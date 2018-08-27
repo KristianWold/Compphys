@@ -6,11 +6,13 @@ using namespace std;
 
 int main()
 {
-    int N = 7;
-    //checking error for n=10, 10^2, ..., 10^N
-    for(int i=1; i<=N; i++)
+    int N = 30;
+    double *err = vector(N);
+    double *logh = vector(N);
+    //checking error for n=10 to n=10^7
+    for(int i=0; i<=N; i++)
     {
-        int n = pow(10,i);
+        int n = int(pow(10, 1 + 6*i/30.));
         double h = 1./(n + 1);
         double *v = solveC(n);
         double maxerr = 0.;
@@ -18,16 +20,22 @@ int main()
         {
             double u = solution(j*h);
             //calculating the error
-            double e = log10(abs((v[j] - u)/u));
+            double e = abs((v[j] - u)/u);
             //finding the maximum error
             if (e > maxerr)
             {
                 maxerr = e;
             }
         }
-        cout<< maxerr << endl;
+        err[i] = maxerr;
+        logh[i] = h;
         free_vector(v);
     }
+    FILE * pFile;
+    pFile = fopen ("error.bin", "wb");
+    fwrite (logh, sizeof(double), N, pFile);
+    fwrite (err, sizeof(double), N, pFile);
+    fclose (pFile);
 
     return 0;
 }

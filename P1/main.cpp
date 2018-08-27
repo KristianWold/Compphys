@@ -8,7 +8,7 @@ int main()
 {
 
   //meta.bin tells python the dimmensions of the vectors
-  int n[] = {3,12,102,1002};
+  int n[] = {3,10,100,1000};
   FILE * pFile;
   pFile = fopen ("meta.bin", "wb");
   fwrite (n, sizeof(int), sizeof(n), pFile);
