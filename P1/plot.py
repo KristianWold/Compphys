@@ -24,5 +24,5 @@ for i in range(N):
 x = np.linspace(0,1,1000)
 plt.plot(x, 1 - (1-np.exp(-10))*x -np.exp(-10*x))
 
-plt.legend(["n=10","n=100","n=1000", "anal"])
+plt.legend(["n=10","n=100","n=1000", "analytical"])
 plt.show()

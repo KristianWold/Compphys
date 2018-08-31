@@ -6,7 +6,6 @@
 
 int main()
 {
-
   //meta.bin tells python the dimmensions of the vectors
   int n[] = {3,10,100,1000};
   FILE * pFile;

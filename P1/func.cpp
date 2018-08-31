@@ -43,7 +43,7 @@ double source(double x)
 
 double solution(double x)
 {
-    return 1 - (1-exp(-10))*x -exp(-10*x);
+    return 1 - (1-exp(-10))*x - exp(-10*x);
 }
 
 
