@@ -93,10 +93,11 @@ double *solveB(int n)
   free_vector(v); free_vector(f);
 }
 
+
 //Optimized solver
 double *solveC(int n)
 {
-  double h = 1./(n-1);
+  double h = 1./(n+1);
 
   double *b = vector(n);
   for(int i = 0; i<n; i++)
@@ -113,7 +114,7 @@ double *solveC(int n)
 
   auto start = std::chrono::high_resolution_clock::now(); //start clock
   //forward sub
-  for(int i=2; i<n-1; i++)
+  for(int i=1; i<n; i++)
   {
     b[i] -= 1/b[i-1];
     f[i] += f[i-1]/b[i-1];
@@ -121,9 +122,9 @@ double *solveC(int n)
 
   //backward sub
   double *v = vector(n);
-  v[0] = 0; v[n-1] = 0; //boundary condition
-  v[n-2] = f[n-2]/b[n-2];
-  for(int i = n-3; i>0; i--)
+  //v[0] = 0; v[n-1] = 0; //boundary condition
+  v[n-1] = f[n-1]/b[n-1];
+  for(int i = n-2; i>=0; i--)
   {
     v[i] = (f[i] + v[i+1])/b[i];
   }

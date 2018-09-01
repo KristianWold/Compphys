@@ -21,7 +21,7 @@ int main()
   }
   fclose (pFile);
 
-  solveB(1e3);
-  solveC(1e3);
+  //solveB(1e3);
+  //solveC(1e3);
   return 0;
 }
