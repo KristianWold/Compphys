@@ -12,9 +12,9 @@ int main()
     //checking error for n=10 to n=10^7
     for(int i=0; i<N; i++)
     {
-        int n = int(pow(10, 1 + 6*i/(N-1.)));
+        int n = pow(10, i+1);
         double *v = solveC(n);
-        h[i] = 1/(float(n) - 1);
+        h[i] = 1/(double(n)-1);
 
         //double u = solution(n/2*h[i]);
         //maxerror[i] = abs((v[n/2] - u)/u);
@@ -31,14 +31,14 @@ int main()
                 maxerror[i] = error;
             }
         }
+        cout << maxerror[i] << endl;
 
         free_vector(v);
     }
     FILE * pFile;
     pFile = fopen ("error.bin", "wb");
-    fwrite (h, sizeof(double), N, pFile);
-    fwrite (maxerror, sizeof(double), N, pFile);
-    fclose (pFile);
-
+    fwrite(h, sizeof(double), N, pFile);
+    fwrite(maxerror, sizeof(double), N, pFile);
+    fclose(pFile);
     return 0;
 }

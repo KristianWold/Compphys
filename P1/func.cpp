@@ -50,7 +50,7 @@ double solution(double x)
 //Solves the set of linear equations with a forward and backward substitution
 double *solveB(int n)
 {
-  double h = 1./(n+1);
+  double h = 1/double(n+1);
 
   double *a = vector(n); double *b = vector(n); double *c = vector(n);
   for(int i = 0; i<n; i++)
@@ -96,7 +96,7 @@ double *solveB(int n)
 //Optimized solver
 double *solveC(int n)
 {
-  double h = 1./(n-1);
+  double h = 1/double(n-1);
 
   double *b = vector(n);
   for(int i = 0; i<n; i++)
@@ -122,8 +122,7 @@ double *solveC(int n)
   //backward sub
   double *v = vector(n);
   v[0] = 0; v[n-1] = 0; //boundary condition
-  v[n-2] = f[n-2]/b[n-2];
-  for(int i = n-3; i>0; i--)
+  for(int i = n-2; i>0; i--)
   {
     v[i] = (f[i] + v[i+1])/b[i];
   }

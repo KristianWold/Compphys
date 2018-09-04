@@ -18,6 +18,7 @@ x0 = 0
 for i in range(N):
     #plots a slice of y corresponding to the correct vector
     plt.plot(np.linspace(0,1,n[i]), y[x0:(n[i]+x0)])
+    #print(y[x0:(n[i]+x0)])
     x0 += n[i]
 
 #analytical solution
