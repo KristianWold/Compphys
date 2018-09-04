@@ -15,7 +15,7 @@ int main()
 
   //writes data to binary file so python can read it
   pFile = fopen ("myfile.bin", "wb");
-  for (int i = 1; i<n[0]+1; i++)
+  for (int i = 1; i<=n[0]; i++)
   {
     fwrite (solveC(n[i]), sizeof(double), n[i], pFile);
   }
