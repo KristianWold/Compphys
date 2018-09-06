@@ -16,7 +16,7 @@ int main()
         int n = pow(10, i+1);
         //Numerical solution
         double *v = solveC(n,source);
-        h[i] = 1/(double(n)-1);
+        h[i] = 1/double(n-1);
 
         maxerror[i] = 0;
         //Truncates the function on each side to avoid division by zero
