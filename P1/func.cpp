@@ -1,5 +1,6 @@
 #include <iostream>
 #include <chrono>
+#include <math.h>
 
 double **matrix(int, int);
 double *vector(int);
@@ -36,19 +37,13 @@ void *free_vector(double* A)
   delete[] A;
 }
 
-double source(double x)
-{
-  return 100*exp(-10*x);
-}
+double source(double x){return 100*exp(-10*x);}
 
-double solution(double x)
-{
-    return 1 - (1-exp(-10))*x - exp(-10*x);
-}
+double solution(double x){return 1 - (1-exp(-10))*x - exp(-10*x);}
 
 
 //Solves the set of linear equations with a forward and backward substitution
-double *solveB(int n)
+double *solveB(int n, double source(double))
 {
   double h = 1/double(n+1);
 
@@ -94,7 +89,7 @@ double *solveB(int n)
 }
 
 //Optimized solver
-double *solveC(int n)
+double *solveC(int n, double source(double))
 {
   double h = 1/double(n-1);
 

@@ -24,7 +24,5 @@ int main(int argc, char const *argv[])
     }
 
     x = solve(A, v);
-
-
     return 0;
 }

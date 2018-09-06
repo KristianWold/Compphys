@@ -9,17 +9,17 @@ int main()
     int N = 7;
     double *h = vector(N);
     double *maxerror = vector(N);
+
     //checking error for n=10 to n=10^7
     for(int i=0; i<N; i++)
     {
         int n = pow(10, i+1);
-        double *v = solveC(n);
+        //Numerical solution
+        double *v = solveC(n,source);
         h[i] = 1/(double(n)-1);
 
-        //double u = solution(n/2*h[i]);
-        //maxerror[i] = abs((v[n/2] - u)/u);
-
         maxerror[i] = 0;
+        //Truncates the function on each side to avoid division by zero
         for(int j=n/10; j<9*n/10; j++)
         {
             double u = solution(j*h[i]);
