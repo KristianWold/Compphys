@@ -16,13 +16,29 @@ int main(int argc, char const *argv[])
         A(i,i+1) = -1.;
     }
     A(n-1,n-1) = 2.;
-    Col<double> x(n);
+    Col<double> solution(n);
     Col<double> v(n);
-    for(int i=0; i<n-1; i++)
+    for(int i=0; i<n; i++)
     {
-        v(i) = 100*exp(-10*i*h);
+        v(i) = h*h*100*exp(-10*i*h);
     }
 
-    x = solve(A, v);
+    solution = solve(A,v);
+    double* solutionVector = new double[n];
+    for(int i = 0; i<n; i++)
+    {
+        solutionVector[i] = solution(i);
+    }
+
+    int N[2] = {1,n};
+    FILE * pFile;
+    pFile = fopen ("metaArmadillo.bin", "wb");
+    fwrite (N, sizeof(int), 2, pFile);
+    fclose (pFile);
+
+    //writes data to binary file so python can read it
+    pFile = fopen ("myfileArmadillo.bin", "wb");
+    fwrite (solutionVector, sizeof(double), n, pFile);
+    fclose (pFile);
     return 0;
 }

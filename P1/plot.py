@@ -1,9 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import struct
+import sys
 
-meta = open("meta.bin","rb")
-f = open("myfile.bin","rb")
+metaName = sys.argv[1]
+myfileName = sys.argv[2]
+
+meta = open(metaName + ".bin","rb")
+f = open(myfileName + ".bin","rb")
 
 #number of vectors
 N = struct.unpack("i", meta.read(4))[0]
