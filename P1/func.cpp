@@ -42,10 +42,10 @@ double source(double x){return 100*exp(-10*x);}
 double solution(double x){return 1 - (1-exp(-10))*x - exp(-10*x);}
 
 
-//Solves the set of linear equations with a forward and backward substitution
+//General method. Solves the set of linear equations with a forward and backward substitution
 double *solveB(int n, double source(double))
 {
-  double h = 1/double(n+1);
+  double h = 1/double(n-1);
 
   double *a = vector(n); double *b = vector(n); double *c = vector(n);
   for(int i = 0; i<n; i++)
@@ -64,7 +64,7 @@ double *solveB(int n, double source(double))
   auto start = std::chrono::high_resolution_clock::now(); //start clock
   //forward sub
   double temp;
-  for(int i=1; i<n; i++)
+  for(int i=2; i<n-1; i++)
   {
     temp = a[i-1]/b[i-1];
     b[i] -= temp*c[i-1];

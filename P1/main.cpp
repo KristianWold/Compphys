@@ -23,7 +23,8 @@ int main(int argc, char *argv[])
     pFile = fopen ("myfile.bin", "wb");
     for (int i = 1; i<=n[0]; i++)
     {
-        fwrite (solveC(n[i], source), sizeof(double), n[i], pFile);
+        fwrite (solveB(n[i], source), sizeof(double), n[i], pFile);
+        //fwrite (solveC(n[i], source), sizeof(double), n[i], pFile);
     }
     fclose (pFile);
     return 0;
