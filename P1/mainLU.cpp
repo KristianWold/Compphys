@@ -3,9 +3,8 @@
 using namespace std;
 using namespace arma;
 
-int main(int argc, char const *argv[])
+double LU(int n, double source(double))
 {
-    int n = atof(argv[1]);
     double h = 1./(n-1);
     Mat<double> A(n,n);
     A.zeros();
@@ -23,6 +22,5 @@ int main(int argc, char const *argv[])
         v(i) = h*h*100*exp(-10*i*h);
     }
 
-    solution = solve(A,v);
-    return 0;
+    solve solve(A,v);
 }

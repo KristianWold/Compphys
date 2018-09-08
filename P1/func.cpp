@@ -81,7 +81,7 @@ double *solveB(int n, double source(double))
 
   auto finish = std::chrono::high_resolution_clock::now(); //stop clock
   std::chrono::duration<double> elapsed = finish - start;
-  std::cout << "Elapsed time:" << elapsed.count() << std::endl;
+  std::cout << "Elapsed time for n=" << n <<" using general method: " << elapsed.count() << std::endl;
 
   return (double *)v;
   free_vector(a); free_vector(b); free_vector(c);
@@ -124,7 +124,7 @@ double *solveC(int n, double source(double))
 
   auto finish = std::chrono::high_resolution_clock::now(); //stop clock
   std::chrono::duration<double> elapsed = finish - start;
-  std::cout << "Elapsed time:" << elapsed.count() << std::endl;
+  std::cout << "Elapsed time for n=" << n <<" using optimized method: " << elapsed.count() << std::endl;
 
   return (double *)v;
   free_vector(b); free_vector(v); free_vector(f);
