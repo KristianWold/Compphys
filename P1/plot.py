@@ -27,6 +27,8 @@ for i in range(N):
     plt.grid()
     plt.plot(np.linspace(0,1,n[i]), y[x0:(n[i]+x0)])
     plt.plot(x, solution(x))
+    plt.xlabel("x")
+    plt.ylabel("u")
     plt.legend(["n=%s"%n[i], "analytical"])
 
 

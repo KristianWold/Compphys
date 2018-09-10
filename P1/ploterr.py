@@ -12,6 +12,7 @@ err = np.array([struct.unpack("d", f.read(8))[0] for i in range(7)])
 
 fig = plt.figure()
 ax = fig.gca()
+plt.grid()
 plt.plot(np.log10(h), np.log10(err))
 #graph with slope of 2
 plt.plot(np.log10(h), 2*np.log10(h))
