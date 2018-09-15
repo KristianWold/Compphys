@@ -17,8 +17,6 @@ arma::Col<double> LU(int n, double source(double))
     {
         f(i) = h*h*solution(i*h);
     }
-
-    A.print("A=");
     auto start = std::chrono::high_resolution_clock::now(); //start clock
 
     v = arma::solve(A,f);
@@ -37,7 +35,7 @@ int main(int argc, char const *argv[])
     int n = atoi(argv[1]);
     v = solveB(n,source);
     v = solveC(n,source);
-    if (n <= 1e4)
+    if (n <= 1e5)
     {
         V = LU(n,source);
     }
