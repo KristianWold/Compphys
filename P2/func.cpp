@@ -4,55 +4,51 @@
 #include <armadillo>
 using namespace arma;
 
-void Jacobi(mat<double> A, int k, int l)
+void max_element(mat &A, int &k, int &l, double &max, int n)
 {
-    double tau = (A(l)(l) - A(k)(k))/(2*A(k)(l));
-    double t = 1/(tau + (1 - 2*signbit(tau))*sqrt(1 + tau*tau));
+    max = 0;
+    for(int i = 1; i<n; i++)
+    {
+        for(int j = 0; j<i; j++)
+        {
+            if (abs(A(i,j)) > max)
+            {
+                max = abs(A(i,j));
+                k = i;
+                l = j;
+            }
+        }
+    }
+}
+
+void Jacobi(mat &A, int k, int l, int n)
+{
+    double Akk = A(k,k);
+    double All = A(l,l);
+    double Akl = A(k,l);
+    double tau = (All - Akk)/(2*Akl);
+    double t = 1/(tau + (1-2*signbit(tau))*sqrt(1 + tau*tau));
     double c = 1/sqrt(1 + t*t);
     double s = t*c;
 
-    for (int i = 0; i<l; i++)
+    for (int i = 0; i<n; i++)
     {
-        A(i)(k) = A(i)(k)*c - A(i)(l)*s;
+        double temp = A(i,k);
+        A(i,k) = A(i,k)*c - A(i,l)*s;
+        A(i,l) = A(i,l)*c + temp*s;
     }
 
-    for (int i = k+1; i<n; i++)
+    for (int i = 0; i<n; i++)
     {
-        A(k)(i) = A(i)(k)*c - A(l)(i)*s;
+        double temp = A(k,i);
+        A(k,i) = A(k,i)*c - A(l,i)*s;
+        A(l,i) = A(l,i)*c + temp*s;
     }
 
-    for (int i = 0; i<n-; i++)
-    {
-        A(i)(k) = A(i)(k)*c - A(i)(l)*s;
-    }
+    double c2 = c*c;
+    double s2 = s*s;
 
-    for (int i = k+1; i<n; i++)
-    {
-        A(k)(i) = A(i)(k)*c - A(l)(i)*s;
-    }
-
-    for (int i = b+1; i<a; i++)
-    {
-        double tempele = B(k)(i) = B(i)(k)*c - B(i)(l)*s;
-        B(i)(l) = B(l)(i) = B(i)(l)*c + B(i)(k)*s;
-        B(i)(k) = tempele;
-    }
-
-    for (int i = a+1; i<n; i++)
-    {
-        double tempele = B(k)(i) = B(i)(k)*c - B(i)(l)*s;
-        B(i)(l) = B(l)(i) = B(i)(l)*c + B(i)(k)*s;
-        B(i)(k) = tempele;
-    }
-
-    double cs = c*s;
-    double Acs = 2*B(k)(l)*cs;
-    double c2 = pow(c,2);
-    double s2 = pow(s,2);
-
-    double tempele1 = B(k)(k)*c2 - Acs + B(l)(l)*s2;
-    double tempele2 = B(l)(l)*c2 + Acs + B(k)(k)*s2;
-    B(k)(l) = B(l)(k) = (B(k)(k) - B(l)(l))*cs + B(k)(l)*(c2-s2);
-    B(k)(k) = tempele1;
-    B(l)(l) = tempele2;
+    A(k,k) = Akk*c2 - 2*Akl*c*s + All*s2;
+    A(l,l) = All*c2 + 2*Akl*c*s + Akk*s2;
+    A(k,l) = 0;
 }
