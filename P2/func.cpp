@@ -7,9 +7,9 @@ using namespace arma;
 void max_element(mat &A, int &k, int &l, double &max, int n)
 {
     max = 0;
-    for(int i = 1; i<n; i++)
+    for(int i = 0; i<n; i++)
     {
-        for(int j = 0; j<i; j++)
+        for(int j = i+1; j<n; j++)
         {
             if (abs(A(i,j)) > max)
             {
@@ -26,8 +26,12 @@ void Jacobi(mat &A, int k, int l, int n)
     double Akk = A(k,k);
     double All = A(l,l);
     double Akl = A(k,l);
+
+    double t;
     double tau = (All - Akk)/(2*Akl);
-    double t = 1/(tau + (1-2*signbit(tau))*sqrt(1 + tau*tau));
+    if (tau>=0){t = 1/(tau + sqrt(1 + tau*tau));}
+    else {t = -1/(tau - sqrt(1 + tau*tau));}
+
     double c = 1/sqrt(1 + t*t);
     double s = t*c;
 
