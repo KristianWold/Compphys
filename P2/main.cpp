@@ -2,45 +2,51 @@
 #include <chrono>
 #include <math.h>
 #include <armadillo>
+#include <fstream>
+#include <chrono>
 #include "func.cpp"
 using namespace arma;
+using namespace std;
+using namespace chrono;
+
+inline vec HarmonicOsc(double w,vec x)
+{
+		return w*w*x%x;
+}
+
+inline vec Interacting(double w,vec x)
+{
+		return w*w*x%x + 1/x;
+}
+
 
 int main()
 {
-    int n = 300;
-    double pN = 14;
+		int n = 500;
+		double pN = 15;
+		double p0 = 0.0;
+		double w = 0.1;
 
-    double p0 = 0;
+		double h = (pN - p0)/(n+1);
+		double h2 = h*h;
+		vec x = linspace(p0+h, pN-h, n);
 
-    double h = (pN - p0)/n;
-    double h2 = h*h;
-    Col<double> x = linspace(p0, pN, n);
+		//Col<double> V = w*w*x%x;// +1/x;
 
-    mat A = zeros(n, n);
-    for(int i = 0; i<n-1; i++)
-    {
-        A(i,i) = 2/h2+ x(i)*x(i);
-        A(i,i+1) = -1/h2;
-        A(i+1,i) = -1/h2;
-    }
-    A(n-1,n-1) = 2/h2 + x(n-1)*x(n-1);
+		auto start = high_resolution_clock::now();
+		mat eigvec1 = SolveArma(n, h, x, HarmonicOsc, w);
+		mat eigvec2 = SolveArma(n, h, x, Interacting, w);
+		auto finish = high_resolution_clock::now();
 
-    int k = 0;
-    int l = 0;
-    double max = 1;
+		cout << duration<double>(finish - start).count() << endl;
 
-    while (max>1e-10)
-    {
-        max_element(A, k, l, max, n);
-        Jacobi(A, k, l, n);
-    }
-    //cout << A << endl;
+		ofstream myfile;
+		myfile.open("eigenvec.txt");
+		for(int i=0; i<n; i++)
+		{
+				myfile << x(i) << " " << eigvec1(i,0)/sqrt(h) << " " << eigvec2(i,0)/sqrt(h)<< endl;
+		}
+		myfile.close();
 
-    Col<double> eig = A.diag(0);
-    eig = sort(eig);
-    cout << eig(0) << endl;
-    cout << eig(1) << endl;
-    cout << eig(2) << endl;
-    cout << eig(3) << endl;
-    return 0;
+		return 0;
 }

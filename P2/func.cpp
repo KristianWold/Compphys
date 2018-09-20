@@ -2,57 +2,68 @@
 #include <chrono>
 #include <math.h>
 #include <armadillo>
+#include <fstream>
 using namespace arma;
+using namespace std;
 
 void max_element(mat &A, int &k, int &l, double &max, int n)
 {
-    max = 0;
-    for(int i = 0; i<n; i++)
-    {
-        for(int j = i+1; j<n; j++)
-        {
-            if (abs(A(i,j)) > max)
-            {
-                max = abs(A(i,j));
-                k = i;
-                l = j;
-            }
-        }
-    }
+		max = 0;
+		for(int i = 0; i<n; i++)
+		{
+				for(int j = i+1; j<n; j++)
+				{
+						if (abs(A(i,j)) > max)
+						{
+								max = abs(A(i,j));
+								k = i;
+								l = j;
+						}
+				}
+		}
 }
 
 void Jacobi(mat &A, int k, int l, int n)
 {
-    double Akk = A(k,k);
-    double All = A(l,l);
-    double Akl = A(k,l);
+		double Akk = A(k,k);
+		double All = A(l,l);
+		double Akl = A(k,l);
 
-    double t;
-    double tau = (All - Akk)/(2*Akl);
-    if (tau>=0){t = 1/(tau + sqrt(1 + tau*tau));}
-    else {t = -1/(tau - sqrt(1 + tau*tau));}
+		double t;
+		double tau = (All - Akk)/(2*Akl);
+		if (tau>=0) {t = 1/(tau + sqrt(1 + tau*tau));}
+		else {t = 1/(tau - sqrt(1 + tau*tau));}
 
-    double c = 1/sqrt(1 + t*t);
-    double s = t*c;
+		double c = 1/sqrt(1 + t*t);
+		double s = t*c;
 
-    for (int i = 0; i<n; i++)
-    {
-        double temp = A(i,k);
-        A(i,k) = A(i,k)*c - A(i,l)*s;
-        A(i,l) = A(i,l)*c + temp*s;
-    }
+		for (int i = 0; i<n; i++)
+		{
+				double temp = A(i,k);
+				A(k,i) = A(i,k) = A(i,k)*c - A(i,l)*s;
+				A(l,i) = A(i,l) = A(i,l)*c + temp*s;
+		}
 
-    for (int i = 0; i<n; i++)
-    {
-        double temp = A(k,i);
-        A(k,i) = A(k,i)*c - A(l,i)*s;
-        A(l,i) = A(l,i)*c + temp*s;
-    }
+		double c2 = c*c;
+		double s2 = s*s;
 
-    double c2 = c*c;
-    double s2 = s*s;
+		A(k,k) = Akk*c2 - 2*Akl*c*s + All*s2;
+		A(l,l) = All*c2 + 2*Akl*c*s + Akk*s2;
+		A(k,l) = A(l,k) = 0;
+}
 
-    A(k,k) = Akk*c2 - 2*Akl*c*s + All*s2;
-    A(l,l) = All*c2 + 2*Akl*c*s + Akk*s2;
-    A(k,l) = 0;
+mat SolveArma(int n, double h, vec &x, vec V(double, vec), double w)
+{
+		double h2 = h*h;
+		mat A(n,n, fill::zeros);
+		A.diag(-1).fill(-1/h2);
+		A.diag(0).fill(2/h2);
+		A.diag(0) += V(w,x);
+		A.diag(1).fill(-1/h2);
+
+		vec eigval;
+		mat eigvec;
+
+		eig_sym(eigval, eigvec, A);
+		return eigvec;
 }
