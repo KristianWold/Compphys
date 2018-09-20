@@ -52,6 +52,30 @@ void Jacobi(mat &A, int k, int l, int n)
 		A(k,l) = A(l,k) = 0;
 }
 
+vec SolveJacobi(double h, vec &x, vec V(double, vec), double w, int n)
+{
+		double h2 = h*h;
+		mat A(n,n, fill::zeros);
+		A.diag(-1).fill(-1/h2);
+		A.diag(0).fill(2/h2);
+		A.diag(0) += V(w,x);
+		A.diag(1).fill(-1/h2);
+
+		int k,l;
+		double max = 1;
+		double eps = 1e-10;
+
+		while(max>eps)
+		{
+			max_element(A, k, l, max, n);
+			Jacobi(A, k, l, n);
+		}
+
+		vec eig = A.diag(0);
+		eig = sort(eig);
+		return eig;
+}
+
 mat SolveArma(int n, double h, vec &x, vec V(double, vec), double w)
 {
 		double h2 = h*h;

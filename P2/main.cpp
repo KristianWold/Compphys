@@ -22,31 +22,41 @@ inline vec Interacting(double w,vec x)
 
 int main()
 {
-		int n = 500;
-		double pN = 15;
+		int n = 200;
+		double pN = 3;
 		double p0 = 0.0;
-		double w = 0.1;
 
 		double h = (pN - p0)/(n+1);
-		double h2 = h*h;
 		vec x = linspace(p0+h, pN-h, n);
 
-		//Col<double> V = w*w*x%x;// +1/x;
+		vec eig = SolveJacobi(h, x, HarmonicOsc, 1, n);
 
-		auto start = high_resolution_clock::now();
-		mat eigvec1 = SolveArma(n, h, x, HarmonicOsc, w);
-		mat eigvec2 = SolveArma(n, h, x, Interacting, w);
-		auto finish = high_resolution_clock::now();
+		cout << eig(0) << endl;
+		cout << eig(1) << endl;
+		cout << eig(2) << endl;
 
-		cout << duration<double>(finish - start).count() << endl;
+/*
+		n = 700;
+		pN = 20;
+	 	p0 = 0.0;
+
+		h = (pN - p0)/(n+1);
+		h2 = h*h;
+		x = linspace(p0+h, pN-h, n);
+
+		mat eigvec1 = SolveArma(n, h, x, HarmonicOsc, 1);
+		mat eigvec2 = SolveArma(n, h, x, Interacting, 1);
+		mat eigvec3 = SolveArma(n, h, x, Interacting, 0.3);
+		mat eigvec4 = SolveArma(n, h, x, Interacting, 0.05);
 
 		ofstream myfile;
 		myfile.open("eigenvec.txt");
 		for(int i=0; i<n; i++)
 		{
-				myfile << x(i) << " " << eigvec1(i,0)/sqrt(h) << " " << eigvec2(i,0)/sqrt(h)<< endl;
+				myfile << x(i) << " " << eigvec1(i,0)/sqrt(h) << " " << eigvec2(i,0)/sqrt(h)<<
+				" " << eigvec3(i,0)/sqrt(h) << " " << eigvec4(i,0)/sqrt(h)<< endl;
 		}
 		myfile.close();
-
+*/
 		return 0;
 }

@@ -1,5 +1,5 @@
-/tmp/cc69vp0B.o: In function `void arma::lapack::syevd<double>(char*, char*, int*, double*, int*, double*, double*, int*, int*, int*, int*)':
-main.cpp:(.text._ZN4arma6lapack5syevdIdEEvPcS2_PiPT_S3_S5_S5_S3_S3_S3_S3_[_ZN4arma6lapack5syevdIdEEvPcS2_PiPT_S3_S5_S5_S3_S3_S3_S3_]+0x55): undefined reference to `wrapper_dsyevd_'
-/tmp/cc69vp0B.o: In function `void arma::lapack::syev<double>(char*, char*, int*, double*, int*, double*, double*, int*, int*)':
-main.cpp:(.text._ZN4arma6lapack4syevIdEEvPcS2_PiPT_S3_S5_S5_S3_S3_[_ZN4arma6lapack4syevIdEEvPcS2_PiPT_S3_S5_S5_S3_S3_]+0x4f): undefined reference to `wrapper_dsyev_'
+/tmp/cc6wcb9t.o: In function `void arma::lapack::syevd<double>(char*, char*, int*, double*, int*, double*, double*, int*, int*, int*, int*)':
+test.cpp:(.text._ZN4arma6lapack5syevdIdEEvPcS2_PiPT_S3_S5_S5_S3_S3_S3_S3_[_ZN4arma6lapack5syevdIdEEvPcS2_PiPT_S3_S5_S5_S3_S3_S3_S3_]+0x55): undefined reference to `wrapper_dsyevd_'
+/tmp/cc6wcb9t.o: In function `void arma::lapack::syev<double>(char*, char*, int*, double*, int*, double*, double*, int*, int*)':
+test.cpp:(.text._ZN4arma6lapack4syevIdEEvPcS2_PiPT_S3_S5_S5_S3_S3_[_ZN4arma6lapack4syevIdEEvPcS2_PiPT_S3_S5_S5_S3_S3_]+0x4f): undefined reference to `wrapper_dsyev_'
 collect2: error: ld returned 1 exit status
