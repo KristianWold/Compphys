@@ -1,14 +1,12 @@
-CCflags = g++ -O3
+CPPflags = g++ -O3
 
-LIB = -larmadillo -DARMA_DONT_USE_WRAPPER -llapack -lblas
+LIB = -DARMA_DONT_USE_WRAPPER -lblas -llapack
 
-PROG = testcode
+main: main.o func.o
+	${CPPflags} -o main.o main.cpp func.cpp ${LIB}
 
-${PROG} :	main.o func.o
-			${CPPflags} main.o func.o ${LIB} -o ${PROG}
+test: test.o func.o
+	${CPPflags} -o test.o test.cpp func.cpp ${LIB}
 
-main.o :	main.cpp
-			${CPPflags} -c main.cpp
-
-func.o :	func.cpp
-			${CPPflags} -c func.cpp
+benchmark: benchmark.o func.o
+	${CPPflags} -o benchmark.o benchmark.cpp func.cpp ${LIB}

@@ -1,6 +1,22 @@
-#include <func.h>
+//#include <func.h>
+#include <iostream>
+#include <math.h>
+#include <armadillo>
+#include "func.h"
 using namespace arma;
 using namespace std;
+
+mat makeMatrix(vec x, double w, vec V(vec x, double w), double h, int n)
+{
+	double h2 = h*h;
+	mat A(n,n, fill::zeros);
+	A.diag(-1).fill(-1/h2);
+	A.diag(0).fill(2/h2);
+	A.diag(0) += V(x,w);
+	A.diag(1).fill(-1/h2);
+
+	return A;
+}
 
 //Finds the largest off-diagonal element above the diagonal
 void max_element(mat &A, int &k, int &l, double &max, int n)
@@ -22,7 +38,7 @@ void max_element(mat &A, int &k, int &l, double &max, int n)
 
 
 //Performs a rotation on a given matrix element
-void Jacobi(mat &A, int k, int l, int n)
+void jacobi(mat &A, int k, int l, int n)
 {
 	double Akk = A(k,k);
 	double All = A(l,l);
@@ -53,15 +69,8 @@ void Jacobi(mat &A, int k, int l, int n)
 
 
 //Performs Jacobis algorithm to find eigenvalues
-vec SolveJacobi(double h, vec &x, vec V(double, vec), double w, int n)
+vec solveJacobi(mat A, int n)
 {
-	double h2 = h*h;
-	mat A(n,n, fill::zeros);
-	A.diag(-1).fill(-1/h2);
-	A.diag(0).fill(2/h2);
-	A.diag(0) += V(w,x);
-	A.diag(1).fill(-1/h2);
-
 	int k,l;
 	double max = 1;
 	double eps = 1e-10;
@@ -69,7 +78,7 @@ vec SolveJacobi(double h, vec &x, vec V(double, vec), double w, int n)
 	while(max>eps)
 	{
 		max_element(A, k, l, max, n);
-		Jacobi(A, k, l, n);
+		jacobi(A, k, l, n);
 	}
 
 	vec eig = A.diag(0);
@@ -77,15 +86,8 @@ vec SolveJacobi(double h, vec &x, vec V(double, vec), double w, int n)
 	return eig;
 }
 
-mat SolveArma(int n, double h, vec &x, vec V(double, vec), double w)
+mat solveArma(mat A, int n)
 {
-	double h2 = h*h;
-	mat A(n,n, fill::zeros);
-	A.diag(-1).fill(-1/h2);
-	A.diag(0).fill(2/h2);
-	A.diag(0) += V(w,x);
-	A.diag(1).fill(-1/h2);
-
 	vec eigval;
 	mat eigvec;
 

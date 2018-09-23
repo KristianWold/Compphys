@@ -7,12 +7,14 @@
 using namespace arma;
 using namespace std;
 
-void max_element(mat, int, int, double, int);
+mat makeMatrix(vec x, double w, vec V(vec x, double w), double h, int n);
 
-void Jacobi(mat, int, int, int)
+void max_element(mat &A, int &k, int &l, double &max, int n);
 
-vec SolveJacobi(double, vec, vec, double, int)
+void jacobi(mat &A, int k, int l, int n);
 
-mat SolveArma(int, double, vec, vec, double w)
+vec solveJacobi(mat A, int n);
+
+mat solveArma(mat A, int n);
 
 #endif

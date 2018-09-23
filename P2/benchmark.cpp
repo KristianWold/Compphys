@@ -1,8 +1,9 @@
 #include <iostream>
 #include <armadillo>
-#include "func.cpp"
 #include <chrono>
 #include <fstream>
+
+#include "func.h"
 
 using namespace arma;
 using namespace std;
@@ -13,6 +14,7 @@ int main()
     ofstream myfile;
     myfile.open("benchmark.txt");
 
+    vec eig;
     int m = 10;
     double average_time = 0;
     for(int n = 10; n <= 100; n += 10)
@@ -33,11 +35,7 @@ int main()
             double max = 1;
 
             auto start = high_resolution_clock::now();
-            while (max>1e-10)
-            {
-                max_element(A, k, l, max, n);
-                Jacobi(A, k, l, n);
-            }
+            eig = solveJacobi(A, n);
             auto finish = high_resolution_clock::now();
 
             average_time += duration<double>(finish - start).count();

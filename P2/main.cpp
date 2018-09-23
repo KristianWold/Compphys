@@ -3,40 +3,41 @@
 #include <math.h>
 #include <armadillo>
 #include <fstream>
-#include <chrono>
-#include <func.h>
+
+#include "func.h"
+
 using namespace arma;
 using namespace std;
 using namespace chrono;
 
-inline vec HarmonicOsc(double w,vec x)
+vec harmonicOsc(vec x, double w)
 {
-		return w*w*x%x;
+	return w*w*x%x;
 }
 
-inline vec Interacting(double w,vec x)
+vec interacting(vec x, double w)
 {
-		return w*w*x%x + 1/x;
+	return w*w*x%x + 1/x;
 }
-
 
 int main()
 {
+	int n = 300;
+	double pN = 5;
+	double p0 = 0.0;
 
-		int n = 200;
-		double pN = 5;
-		double p0 = 0.0;
+	double h = (pN - p0)/(n+1);
+	vec x = linspace(p0+h, pN-h, n);
 
-		double h = (pN - p0)/(n+1);
-		vec x = linspace(p0+h, pN-h, n);
-		/*
-		   vec eig = SolveJacobi(h, x, HarmonicOsc, 1, n);
+	mat A = makeMatrix(x, 1, harmonicOsc, h, n);
 
-		   cout << eig(0) << endl;
-		   cout << eig(1) << endl;
-		   cout << eig(2) << endl;
-		 */
+	vec eig = solveJacobi(A, n);
 
+	cout << eig(0) << endl;
+	cout << eig(1) << endl;
+	cout << eig(2) << endl;
+
+/*
 		n = 700;
 		pN = 20;
 		p0 = 0.0;
@@ -57,6 +58,6 @@ int main()
 				        " " << eigvec3(i,0)/sqrt(h) << " " << eigvec4(i,0)/sqrt(h)<< endl;
 		}
 		myfile.close();
-
+*/
 		return 0;
 }
