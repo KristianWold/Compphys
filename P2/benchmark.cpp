@@ -14,11 +14,14 @@ int main()
     ofstream myfile;
     myfile.open("benchmark.txt");
 
-    vec eig;
+    vec eigval;
+    mat eigvec;
     int m = 10;
-    double average_time = 0;
-    for(int n = 10; n <= 100; n += 10)
+    double average_time_jacobi = 0;
+    double average_time_arma = 0;
+    for(int n = 10; n <= 120; n += 10)
     {
+
         for(int i = 0; i < m; i++)
         {
             mat A = zeros(n, n);
@@ -30,18 +33,19 @@ int main()
             }
             A(n-1,n-1) = 2;
 
-            int k = 0;
-            int l = 0;
-            double max = 1;
-
             auto start = high_resolution_clock::now();
-            eig = solveJacobi(A, n);
+            eigval = solveJacobi(A, n);
             auto finish = high_resolution_clock::now();
+            average_time_jacobi += duration<double>(finish - start).count();
 
-            average_time += duration<double>(finish - start).count();
+            start = high_resolution_clock::now();
+            eigvec = solveArma(A, n);
+            finish = high_resolution_clock::now();
+            average_time_arma += duration<double>(finish - start).count();
         }
-        average_time = average_time/m;
-        myfile << n << " " << average_time << endl;
+        average_time_jacobi = average_time_jacobi/m;
+        average_time_arma = average_time_arma/m;
+        myfile << n << " " << average_time_jacobi << " " << average_time_arma << endl;
     }
     myfile.close();
     return 0;

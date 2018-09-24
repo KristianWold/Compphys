@@ -10,3 +10,5 @@ test: test.o func.o
 
 benchmark: benchmark.o func.o
 	${CPPflags} -o benchmark.o benchmark.cpp func.cpp ${LIB}
+	./benchmark.o
+	python plot.py

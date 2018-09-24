@@ -2,7 +2,9 @@
 #include <iostream>
 #include <math.h>
 #include <armadillo>
+#include <utility>
 #include "func.h"
+
 using namespace arma;
 using namespace std;
 
@@ -38,11 +40,13 @@ void max_element(mat &A, int &k, int &l, double &max, int n)
 
 
 //Performs a rotation on a given matrix element
-void jacobi(mat &A, int k, int l, int n)
+void jacobi(mat &A, mat &R, int k, int l, int n)
 {
 	double Akk = A(k,k);
 	double All = A(l,l);
 	double Akl = A(k,l);
+
+	double temp;
 
 	double t;
 	double tau = (All - Akk)/(2*Akl);
@@ -54,9 +58,13 @@ void jacobi(mat &A, int k, int l, int n)
 
 	for (int i = 0; i<n; i++)
 	{
-		double temp = A(i,k);
+		temp = A(i,k);
 		A(k,i) = A(i,k) = A(i,k)*c - A(i,l)*s;
 		A(l,i) = A(i,l) = A(i,l)*c + temp*s;
+
+		temp = R(i,k);
+		R(i,k) = R(i,k)*c - R(i,l)*s;
+		R(i,l) = R(i,l)*c + temp*s;
 	}
 
 	double c2 = c*c;
@@ -69,28 +77,28 @@ void jacobi(mat &A, int k, int l, int n)
 
 
 //Performs Jacobis algorithm to find eigenvalues
-vec solveJacobi(mat A, int n)
+void solveJacobi(mat A, vec &eigval, mat &eigvec, int n)
 {
 	int k,l;
 	double max = 1;
 	double eps = 1e-10;
 
+	eigvec.zeros(n,n);
+	eigvec.diag(0).fill(1.);
+
 	while(max>eps)
 	{
 		max_element(A, k, l, max, n);
-		jacobi(A, k, l, n);
+		jacobi(A, eigvec, k, l, n);
 	}
 
-	vec eig = A.diag(0);
-	eig = sort(eig);
-	return eig;
-}
-
-mat solveArma(mat A, int n)
-{
-	vec eigval;
-	mat eigvec;
-
-	eig_sym(eigval, eigvec, A);
-	return eigvec;
+	vec eigvalunsorted = A.diag(0);
+	eigval = sort(eigvalunsorted);
+	for(int i = 0; i<n; i++)
+	{
+		if (eigvalunsorted(i) == eigval(0))
+		{
+			eigvec.col(0) = eigvec.col(i);
+		}
+	}
 }
