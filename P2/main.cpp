@@ -20,12 +20,11 @@ vec interacting(vec x, double w)
 	return w*w*x%x + 1/x;
 }
 
-int main()
+int main(int argc, char const *argv[])
 {
-
-	int n = 200;
-	double p0 = 0.0;
-	double pN = 5;
+	int n = atof(argv[1]);
+	double p0 = atof(argv[2]);
+	double pN = atof(argv[3]);
 
 	double h = (pN - p0)/(n+1);
 	vec x = linspace(p0+h, pN-h, n);
@@ -33,14 +32,13 @@ int main()
 	mat A;
 	vec eigval;
 	mat eigvec;
-/*
+
 	A = makeMatrix(x, 1, harmonicOsc, h, n);
 	solveJacobi(A, eigval, eigvec, n);
 
 	cout << eigval(0) << endl;
 	cout << eigval(1) << endl;
 	cout << eigval(2) << endl;
-*/
 
 	n = 100;
 	p0 = 0.0;

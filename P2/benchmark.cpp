@@ -34,12 +34,12 @@ int main()
             A(n-1,n-1) = 2;
 
             auto start = high_resolution_clock::now();
-            eigval = solveJacobi(A, n);
+            solveJacobi(A, eigval, eigvec, n);
             auto finish = high_resolution_clock::now();
             average_time_jacobi += duration<double>(finish - start).count();
 
             start = high_resolution_clock::now();
-            eigvec = solveArma(A, n);
+            eig_sym(eigval, eigvec, A);
             finish = high_resolution_clock::now();
             average_time_arma += duration<double>(finish - start).count();
         }

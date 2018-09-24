@@ -83,22 +83,27 @@ void solveJacobi(mat A, vec &eigval, mat &eigvec, int n)
 	double max = 1;
 	double eps = 1e-10;
 
+	mat eigvecUnsorted(n,n,fill::zeros);
+	eigvecUnsorted.diag(0).fill(1.);
 	eigvec.zeros(n,n);
-	eigvec.diag(0).fill(1.);
 
 	while(max>eps)
 	{
 		max_element(A, k, l, max, n);
-		jacobi(A, eigvec, k, l, n);
+		jacobi(A, eigvecUnsorted, k, l, n);
 	}
 
-	vec eigvalunsorted = A.diag(0);
-	eigval = sort(eigvalunsorted);
+	vec eigvalUnsorted = A.diag(0);
+	eigval = sort(eigvalUnsorted);
+
 	for(int i = 0; i<n; i++)
 	{
-		if (eigvalunsorted(i) == eigval(0))
+		for(int j = 0; j<n; j++)
 		{
-			eigvec.col(0) = eigvec.col(i);
+			if (eigvalUnsorted(j) == eigval(i))
+			{
+				eigvec.col(i) = eigvecUnsorted.col(j);
+			}
 		}
 	}
 }

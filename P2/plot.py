@@ -3,17 +3,17 @@ import matplotlib.pyplot as plt
 """
 file = "benchmark.txt"
 
-n =   np.log10(np.loadtxt(file, usecols=0))
-t1 =  np.log10(np.loadtxt(file, usecols=1))
-t2 =  np.log10(np.loadtxt(file, usecols=2))
+n = np.log10(np.loadtxt(file, usecols=0))
+t1 = np.log10(np.loadtxt(file, usecols=1))
+t2 = np.log10(np.loadtxt(file, usecols=2))
 
-fit1 = np.poly1d(np.polyfit(n,t1,1))
-fit2 = np.poly1d(np.polyfit(n,t2,1))
+fit1 = np.poly1d(np.polyfit(n, t1, 1))
+fit2 = np.poly1d(np.polyfit(n, t2, 1))
 
 plt.plot(n, t1)
-plt.plot(n, fit1(n),":")
+plt.plot(n, fit1(n), ":")
 plt.plot(n, t2)
-plt.plot(n, fit2(n),":")
+plt.plot(n, fit2(n), ":")
 plt.xlabel("log10(n)")
 plt.xlabel("log10(t)")
 plt.legend(["Jacobi", fit1, "Arma", fit2])
