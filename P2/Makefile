@@ -11,4 +11,7 @@ test: test.o func.o
 benchmark: benchmark.o func.o
 	${CPPflags} -o benchmark.o benchmark.cpp func.cpp ${LIB}
 	./benchmark.o
-	python plot.py
+	python plot.py benchmark
+
+clean:
+	rm -f *.o *.txt

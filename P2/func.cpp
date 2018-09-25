@@ -10,6 +10,8 @@ using namespace std;
 
 mat makeMatrix(vec x, double w, vec V(vec x, double w), double h, int n)
 {
+	//Creates an appropriate matrix representing the double derivative
+	//pluss some arbitrary potential for a given step-size
 	double h2 = h*h;
 	mat A(n,n, fill::zeros);
 	A.diag(-1).fill(-1/h2);
@@ -20,9 +22,11 @@ mat makeMatrix(vec x, double w, vec V(vec x, double w), double h, int n)
 	return A;
 }
 
-//Finds the largest off-diagonal element above the diagonal
+
 void max_element(mat &A, int &k, int &l, double &max, int n)
 {
+	//Finds the largest off-diagonal element above the diagonal of the
+	//given matrix
 	max = 0;
 	for(int i = 0; i<n; i++)
 	{
@@ -39,8 +43,16 @@ void max_element(mat &A, int &k, int &l, double &max, int n)
 }
 
 
-//Performs a rotation on a given matrix element
+//============================================================================
 void jacobi(mat &A, mat &R, int k, int l, int n)
+//----------------------------------------------------------------------------
+//Does a single rotation of the matrix A to remove the element A(k,l)
+//Also rotates the accompanying set of verctors R
+//A - matrix to be diagonalized
+//R - accompanying set of eigenvectors to be rotated
+//k,l - element to be set to zero
+//n - dimmension of matrix
+//----------------------------------------------------------------------------
 {
 	double Akk = A(k,k);
 	double All = A(l,l);
@@ -50,12 +62,15 @@ void jacobi(mat &A, mat &R, int k, int l, int n)
 
 	double t;
 	double tau = (All - Akk)/(2*Akl);
+	//Chooses so abs(t) is minimized
 	if (tau>=0) {t = 1/(tau + sqrt(1 + tau*tau));}
 	else {t = 1/(tau - sqrt(1 + tau*tau));}
 
+	//cos and sin
 	double c = 1/sqrt(1 + t*t);
 	double s = t*c;
 
+	//i may run over k,l. This will be overwritten later anyway
 	for (int i = 0; i<n; i++)
 	{
 		temp = A(i,k);
@@ -76,26 +91,40 @@ void jacobi(mat &A, mat &R, int k, int l, int n)
 }
 
 
-//Performs Jacobis algorithm to find eigenvalues
-void solveJacobi(mat A, vec &eigval, mat &eigvec, int n)
+//============================================================================
+void solveJacobi(mat A, vec &eigval, mat &eigvec, int n, bool showCount)
+//----------------------------------------------------------------------------
+//Diagonalize A and generate a sortet set of eigenvales and eigenvectors
+//
+//A - matrix to be diagonalized
+//eigval - address to put eigenvalues
+//eigvec - address to put eigenvectors
+//n - dimmension of matrix
+//showCount = true -> print total number of iterations
+//----------------------------------------------------------------------------
 {
 	int k,l;
 	double max = 1;
-	double eps = 1e-10;
+	double eps = 1e-10;	//Largest acceptable off-diagonal element
 
 	mat eigvecUnsorted(n,n,fill::zeros);
 	eigvecUnsorted.diag(0).fill(1.);
 	eigvec.zeros(n,n);
+	int count = 0;
 
 	while(max>eps)
 	{
 		max_element(A, k, l, max, n);
 		jacobi(A, eigvecUnsorted, k, l, n);
+		count++;	//Count the number of iterations
 	}
 
 	vec eigvalUnsorted = A.diag(0);
+	//The eigenvalues needs to be sorted
 	eigval = sort(eigvalUnsorted);
 
+	//Sorts the eigenvectors according to the eigenvales, since they come
+	//in eigenpairs
 	for(int i = 0; i<n; i++)
 	{
 		for(int j = 0; j<n; j++)
@@ -105,5 +134,10 @@ void solveJacobi(mat A, vec &eigval, mat &eigvec, int n)
 				eigvec.col(i) = eigvecUnsorted.col(j);
 			}
 		}
+	}
+
+	if (showCount)
+	{
+		cout << count << endl;
 	}
 }
