@@ -7,7 +7,7 @@
 using namespace arma;
 using namespace std;
 
-mat makeMatrix(vec x, double w, vec V(vec x, double w), double h, int n);
+mat makeMatrix(vec V, double h, int n);
 
 void max_element(mat &A, int &k, int &l, double &max, int n);
 

@@ -8,7 +8,7 @@
 using namespace arma;
 using namespace std;
 
-mat makeMatrix(vec x, double w, vec V(vec x, double w), double h, int n)
+mat makeMatrix(vec V, double h, int n)
 {
 	//Creates an appropriate matrix representing the double derivative
 	//pluss some arbitrary potential for a given step-size
@@ -16,7 +16,7 @@ mat makeMatrix(vec x, double w, vec V(vec x, double w), double h, int n)
 	mat A(n,n, fill::zeros);
 	A.diag(-1).fill(-1/h2);
 	A.diag(0).fill(2/h2);
-	A.diag(0) += V(x,w);
+	A.diag(0) += V;
 	A.diag(1).fill(-1/h2);
 
 	return A;
@@ -43,7 +43,7 @@ void max_element(mat &A, int &k, int &l, double &max, int n)
 }
 
 
-//============================================================================
+//=============================================================================
 void jacobi(mat &A, mat &R, int k, int l, int n)
 //----------------------------------------------------------------------------
 //Does a single rotation of the matrix A to remove the element A(k,l)
