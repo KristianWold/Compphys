@@ -78,9 +78,9 @@ int main(int argc, char const *argv[])
 	//Calls the method to yield eigenvalues and eigenvectors
 	solveJacobi(A, eigval, eigvec, n, false);
 
-	cout << setprecision(7) << eigval(0) << endl;
-	cout << setprecision(7) << eigval(1) << endl;
-	cout << setprecision(7) << eigval(2) << endl;
-	cout << setprecision(7) << eigval(3) << endl;
+	cout << setprecision(7) << "E0: " << eigval(0) << endl;
+	cout << setprecision(7) << "E1: " << eigval(1) << endl;
+	cout << setprecision(7) << "E2: " << eigval(2) << endl;
+	cout << setprecision(7) << "E3: " << eigval(3) << endl;
 	return 0;
 }
