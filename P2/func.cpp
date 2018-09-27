@@ -9,9 +9,14 @@ using namespace arma;
 using namespace std;
 
 mat makeMatrix(vec V, double h, int n)
+//----------------------------------------------------------------------------
+//Creates an appropriate matrix representing the double derivative
+//pluss some arbitrary potential for a given step-size
+//V - potential
+//h - stepsize
+//n - dimmension of matrix
+//----------------------------------------------------------------------------
 {
-	//Creates an appropriate matrix representing the double derivative
-	//pluss some arbitrary potential for a given step-size
 	double h2 = h*h;
 	mat A(n,n, fill::zeros);
 	A.diag(-1).fill(-1/h2);
@@ -22,11 +27,17 @@ mat makeMatrix(vec V, double h, int n)
 	return A;
 }
 
-
+//=============================================================================
 void max_element(mat &A, int &k, int &l, double &max, int n)
+//----------------------------------------------------------------------------
+//Find the largest off-diagonal element above the diagonal of the
+//given matrix
+//A - matrix to search
+//k,l - indices of largest element
+//max - value of largest element
+//n - dimmension of matrix
+//----------------------------------------------------------------------------
 {
-	//Finds the largest off-diagonal element above the diagonal of the
-	//given matrix
 	max = 0;
 	for(int i = 0; i<n; i++)
 	{
@@ -92,7 +103,7 @@ void jacobi(mat &A, mat &R, int k, int l, int n)
 
 
 //============================================================================
-void solveJacobi(mat A, vec &eigval, mat &eigvec, int n, bool showCount)
+int solveJacobi(mat A, vec &eigval, mat &eigvec, int n)
 //----------------------------------------------------------------------------
 //Diagonalize A and generate a sortet set of eigenvales and eigenvectors
 //
@@ -136,8 +147,5 @@ void solveJacobi(mat A, vec &eigval, mat &eigvec, int n, bool showCount)
 		}
 	}
 
-	if (showCount)
-	{
-		cout << count << endl;
-	}
+	return count;
 }

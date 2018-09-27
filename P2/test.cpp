@@ -34,8 +34,8 @@ int main()
 	max_element(A, k, l, max, n);
 	if (k != 1 or l != 2) {passed = false;}
 
-	if (passed) {cout << "Found larget element" << endl;}
-	else{cout << "Didn't find larget element" << endl;}
+	if (passed) {cout << "Passed: Found larget element" << endl;}
+	else{cout << "Failed: Didn't find larget element" << endl;}
 
 	//test eigenvalues
 	passed = true;
@@ -52,7 +52,7 @@ int main()
 
 	mat eigvec;
 	vec eigval;
-	solveJacobi(A, eigval, eigvec, n, false);
+	solveJacobi(A, eigval, eigvec, n);
 
 	double eps = 1e-6;
 	double analytical;
@@ -63,12 +63,40 @@ int main()
 		{
 			passed = false;
 		}
-		cout << "Numerical: "  << setprecision(4) << eigval(i);
-		cout << "  Analytical: " << setprecision(4) << analytical << endl;
-		cout << "  Rel error: " << setprecision(4) <<
-		abs(analytical - eigval(i))/(analytical) << endl;
+		cout << "Numerical: "  << setprecision(4) << eigval(i)
+		 	 << "  Analytical: " << setprecision(4) << analytical
+			 << "  Rel error: " << setprecision(4)
+			 <<	abs(analytical - eigval(i))/(analytical) << endl;
 	}
-	if (passed) {cout << "Correct eigenvalues" << endl;}
-	else{cout << "Incorrect eigenvalues" << endl;}
+	if (passed) {cout << "Passed: All eigenvalues are correct" << endl;}
+	else{cout << "Failed: Incorrect eigenvalues" << endl;}
+
+	//test orthonormality
+	passed = true;
+
+	A =  eigvec.t()*eigvec;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			if (i==j)
+			{
+				if (abs(A(i,j) - 1)>eps) {passed = false;}
+			}
+			else
+			{
+				if (abs(A(i,j))>eps) {passed = false;}
+			}
+		}
+	}
+	if (passed == true)
+	{
+		cout << "Passed: Eigenvectors are orthonormal" << endl;
+	}
+	else
+	{
+		cout << "Failed: Eigenvectors are orthonormal" << endl;
+	}
+
 	return 0;
 }

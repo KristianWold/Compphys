@@ -13,6 +13,6 @@ void max_element(mat &A, int &k, int &l, double &max, int n);
 
 void jacobi(mat &A, mat &R, int k, int l, int n);
 
-void solveJacobi(mat A, vec &eigval, mat &eigvec, int n, bool showCount);
+int solveJacobi(mat A, vec &eigval, mat &eigvec, int n);
 
 #endif

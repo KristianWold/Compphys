@@ -46,11 +46,11 @@ int main(int argc, char *argv[])
 
 	//non-interacting case
 	A = makeMatrix(harmOsc(x, w), h, n);
-	solveJacobi(A, eigval, eigvec1, n, false);
+	solveJacobi(A, eigval, eigvec1, n);
 
 	//interacting case
 	A = makeMatrix(coulomb(x, w), h, n);
-	solveJacobi(A, eigval, eigvec2, n, false);
+	solveJacobi(A, eigval, eigvec2, n);
 
 	ofstream myfile;
 	myfile.open("eigenvec.txt");

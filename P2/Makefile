@@ -10,6 +10,7 @@ eigenvectors: eigenvectors.o func.o
 
 test: test.o func.o
 	${CPPflags} -o test.o test.cpp func.cpp ${LIB}
+	./test.o
 
 benchmark: benchmark.o func.o
 	${CPPflags} -o benchmark.o benchmark.cpp func.cpp ${LIB}

@@ -76,7 +76,7 @@ int main(int argc, char const *argv[])
 
 	A = makeMatrix(potential, h, n);
 	//Calls the method to yield eigenvalues and eigenvectors
-	solveJacobi(A, eigval, eigvec, n, false);
+	solveJacobi(A, eigval, eigvec, n);
 
 	cout << setprecision(7) << "E0: " << eigval(0) << endl;
 	cout << setprecision(7) << "E1: " << eigval(1) << endl;
