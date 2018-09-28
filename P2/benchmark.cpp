@@ -3,7 +3,7 @@
 #include <chrono>
 #include <fstream>
 
-#include "func.h"
+#include "jacobi.h"
 
 using namespace arma;
 using namespace std;
@@ -17,11 +17,11 @@ int main()
     vec eigval;
     mat eigvec;
     int N;
-    int m = 10;
+    int m = 1;
     double average_time_jacobi = 0;
     double average_time_arma = 0;
     //Runs Jacobis method and Armadillos eig_sym n = 10, 20, ..., 120
-    for(int n = 10; n <= 120; n += 10)
+    for(int n = 10; n <= 400; n += 20)
     {
         //Runs the methods m = 10 times for each n, then averages the times
         for(int i = 0; i < m; i++)

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <armadillo>
-#include "func.h"
+#include "jacobi.h"
 #include <math.h>
 using namespace arma;
 using namespace std;

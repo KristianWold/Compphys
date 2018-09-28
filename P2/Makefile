@@ -2,20 +2,20 @@ CPPflags = g++ -O3
 
 LIB = -DARMA_DONT_USE_WRAPPER -lblas -llapack
 
-quantumDot: quantumDot.o func.o
-	${CPPflags} -o quantumDot.o quantumDot.cpp func.cpp ${LIB}
+quantumDot: quantumDot.o jacobi.o
+	${CPPflags} -o quantumDot.x quantumDot.cpp jacobi.cpp ${LIB}
 
-eigenvectors: eigenvectors.o func.o
-	${CPPflags} -o eigenvectors.o eigenvectors.cpp func.cpp ${LIB}
+eigenvectors: eigenvectors.o jacobi.o
+	${CPPflags} -o eigenvectors.x eigenvectors.cpp jacobi.cpp ${LIB}
 
-test: test.o func.o
-	${CPPflags} -o test.o test.cpp func.cpp ${LIB}
-	./test.o
+test: test.o jacobi.o
+	${CPPflags} -o test.x test.cpp jacobi.cpp ${LIB}
+	./test.x
 
-benchmark: benchmark.o func.o
-	${CPPflags} -o benchmark.o benchmark.cpp func.cpp ${LIB}
-	./benchmark.o
+benchmark: benchmark.o jacobi.o
+	${CPPflags} -o benchmark.x benchmark.cpp jacobi.cpp ${LIB}
+	./benchmark.x
 	python plot.py benchmark
 
 clean:
-	rm -f *.o *.txt
+	rm -f *.o *.txt *.x

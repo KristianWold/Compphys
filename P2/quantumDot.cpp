@@ -5,7 +5,7 @@
 #include <armadillo>
 #include <fstream>
 
-#include "func.h"
+#include "jacobi.h"
 
 using namespace arma;
 using namespace std;

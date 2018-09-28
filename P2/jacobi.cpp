@@ -1,9 +1,9 @@
-//#include <func.h>
+//#include <jacobi.h>
 #include <iostream>
 #include <math.h>
 #include <armadillo>
 #include <utility>
-#include "func.h"
+#include "jacobi.h"
 
 using namespace arma;
 using namespace std;
