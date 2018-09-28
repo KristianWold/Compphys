@@ -30,7 +30,7 @@ if sys.argv[1] == "benchmark":
     plt.plot(n, t2)
     plt.plot(n, fit2(n), ":")
 
-    plt.gca().set_xlabel('$\\log_{10}(n)$')
+    plt.gca().set_xlabel('$\\log_{10}(N)$')
     plt.gca().set_ylabel('$\\log_{10}(t)$')
     plt.gca().set_title(title)
     plt.legend(["Jacobi", fit1, "Arma", fit2])
@@ -41,8 +41,8 @@ if sys.argv[1] == "benchmark":
     plt.plot(n, N)
     plt.plot(n, fit3(n), ":")
 
-    plt.gca().set_xlabel('$\\log_{10}(n)$')
-    plt.gca().set_ylabel('$\\log_{10}(N)$')
+    plt.gca().set_xlabel('$\\log_{10}(N)$')
+    plt.gca().set_ylabel('$\\log_{10}(n)$')
     plt.gca().set_title(title)
     plt.legend(["Number of iterations", fit3])
     fig2.savefig("./results/benchmark_iter.png")
@@ -62,7 +62,7 @@ if sys.argv[1] == "eigenvectors":
     plt.plot(x, y2**2)
 
     plt.gca().set_xlabel('$\\rho$')
-    plt.gca().set_ylabel('Probability')
+    plt.gca().set_ylabel('Probability, |$\\Psi|^2')
     plt.gca().set_title(title)
 
     plt.gcf().set_tight_layout(True)
