@@ -74,5 +74,5 @@ if sys.argv[1] == "eigenvectors":
              transform=plt.gca().transAxes)
 
     plt.legend(["Non-interacting", "Interacting"], loc="center right")
-    fig.savefig("./results/eingenvectors_w=%s.png" % w)
+    fig.savefig("./results/eigenvector_w=%s.png" % w)
     plt.show()
