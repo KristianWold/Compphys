@@ -69,11 +69,10 @@ if sys.argv[1] == "eigenvectors":
     x_pos = 0.8
     y_pos = 0.95
     plt.text(x_pos, y_pos, "$\\omega=$" + w,
-         horizontalalignment='center',
-         verticalalignment='center',
-         transform=plt.gca().transAxes)
+             horizontalalignment='center',
+             verticalalignment='center',
+             transform=plt.gca().transAxes)
 
-
-    plt.legend(["Non-interacting", "Interacting"])
-    fig.savefig("./results/eingenvectors_w=%s.png" % w)
+    plt.legend(["Non-interacting", "Interacting"], loc="center right")
+    fig.savefig("./results/eigenvector_w=%s.png" % w)
     plt.show()

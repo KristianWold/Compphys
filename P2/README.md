@@ -3,10 +3,9 @@
 This repository contains all finalized programs in project 2 produced in a collaboration between [Lasse](https://github.com/lasselb87), [Nicolai](https://github.com/nicolossus), and [Kristian](https://github.com/KristianWold).
 
 ### Contents
-
 [quantumDot.cpp] is used to calculate the four lowest-lying energy states for electrons in a harmonic oscillator well, using Jacobi's method of diagonalization of a matrix. To compile, type "make quantumDot" into the commandline. Run then ./quantumDot.o to see what arguments to give.
 
-[eigenvectors.cpp] is used to calculate the wavefunctions of the interacting and non-interacting case of two electrons for a given frequency. To compile, type "make eigenvectors". Run then ./quantumDot.o to see what arguments to give.
+[eigenvectors.cpp] is used to calculate the wavefunctions of the interacting and non-interacting case of two electrons for a given frequency. To compile, type "make eigenvectors". Run then ./quantumDot.o to see what arguments to give. Due to somewhat lazy programming, make sure to have a folder "results" in the same directory as eigenvectors.x.
 
 [func.cpp] are our implementations of the different methods used to solve the problems in this project.
 
