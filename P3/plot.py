@@ -14,5 +14,7 @@ file = "data.txt"
 x = np.loadtxt(file, usecols=0)
 y = np.loadtxt(file, usecols=1)
 
+plt.gca().set_aspect("equal")
+
 plt.plot(x, y)
 plt.show()
