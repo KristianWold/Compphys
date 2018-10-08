@@ -3,10 +3,13 @@
 #include <armadillo>
 #include <fstream>
 #include <vector>
+#include <string>
+#include <sstream>
+#include <iterator>
 using namespace std;
 using namespace arma;
 
-double scale = 39.485623;
+double scale = 4*M_PI*M_PI;
 
 vec newton(vec pos)
 {
@@ -21,7 +24,13 @@ public:
     vec vel;
     double M;
 
-    Planet(){}
+    Planet()
+    {
+        pos = zeros(3);
+        vel = zeros(3);
+        M = 0;
+    }
+
     Planet(vec position, vec velocity, double mass)
     {
         pos = position;
@@ -42,7 +51,7 @@ private:
 
     void totalAcceleration(mat &totalAcc, int i)
     {
-        totalAcc = zeros(3,numPlanets);
+        totalAcc = zeros(3, numPlanets);
         for(int j=0; j<numPlanets; j++)
         {
             totalAcc.col(j) += newton(pos.slice(i).col(j));
@@ -91,10 +100,9 @@ public:
 
         ofstream myfile;
         myfile.open(filename);
-        for(int i=0; i<numPlanets; i++)
+        for(int j=0; j<N; j++)
         {
-            cout << i << endl;
-            for(int j=0; j<N; j++)
+            for(int i=0; i<numPlanets; i++)
             {
                 myfile << pos.slice(j).col(i)(0) << " "
                        << pos.slice(j).col(i)(1) << " "
@@ -102,21 +110,58 @@ public:
 
                        << vel.slice(j).col(i)(0) << " "
                        << vel.slice(i).col(i)(1) << " "
-                       << vel.slice(i).col(i)(2) << endl;
+                       << vel.slice(i).col(i)(2) << " ";
             }
+            myfile << endl;
         }
+        myfile.close();
     }
 };
 
 int main()
 {
-    vec pos = {1,0,0};
-    vec vel = {0,2*M_PI,0};
-    Planet Earth(pos, vel, 0.0001);
-    vector<Planet> solarsystem = vector<Planet>{Earth};
+    Planet Earth; Earth.M = 1./333000;
+    Planet Jupiter; Jupiter.M = 0.09543;
+    Planet Saturn; Saturn.M = 0.009543;
 
-    Verlet solver(solarsystem, 1);
-    solver.solve(newton, 1, 0.001);
+    vector<Planet> solarsystem = vector<Planet>{Earth, Jupiter, Saturn};
+
+    /*int count = 0;
+    ifstream myfile;
+    myfile.open("init.txt");
+    string line;
+    while(getline(myfile, line))
+    {
+
+        istringstream buf(line);
+        istream_iterator<string> beg(buf), end;
+        vector<string> tokens(beg, end);
+
+        solarsystem[count].pos(0) = stof(tokens[0]);
+        solarsystem[count].pos(1) = stof(tokens[1]);
+        solarsystem[count].pos(2) = stof(tokens[2]);
+
+        solarsystem[count].vel(0) = stof(tokens[3]);
+        solarsystem[count].vel(1) = stof(tokens[4]);
+        solarsystem[count].vel(2) = stof(tokens[5]);
+
+        count++;
+    }
+    myfile.close();
+    */
+
+    solarsystem[0].pos = vec({1,0,0});
+    solarsystem[0].vel = vec({0,2*M_PI,0});
+
+    solarsystem[1].pos = vec({3,0,0});
+    solarsystem[1].vel = vec({0,M_PI,0});
+
+    solarsystem[2].pos = vec({5,0,0});
+    solarsystem[2].vel = vec({0,0.5*M_PI,0});
+
+    Verlet solver(solarsystem, 3);
+    solver.solve(newton, 5, 0.0001);
     solver.writeToFile("data.txt");
+
     return 0;
 }
