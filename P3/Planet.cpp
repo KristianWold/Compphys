@@ -42,7 +42,8 @@ private:
 
     void totalAcceleration(mat &totalAcc, int i)
     {
-        for(int j=0; j<numPlanets-1; j++)
+        totalAcc = zeros(3,numPlanets);
+        for(int j=0; j<numPlanets; j++)
         {
             totalAcc.col(j) += newton(pos.slice(i).col(j));
             for(int k=j+1; k<numPlanets; k++)
@@ -92,13 +93,14 @@ public:
         myfile.open(filename);
         for(int i=0; i<numPlanets; i++)
         {
+            cout << i << endl;
             for(int j=0; j<N; j++)
             {
                 myfile << pos.slice(j).col(i)(0) << " "
                        << pos.slice(j).col(i)(1) << " "
-                       << pos.slice(j).col(i)(2);
+                       << pos.slice(j).col(i)(2) << " "
 
-                myfile << vel.slice(j).col(i)(0) << " "
+                       << vel.slice(j).col(i)(0) << " "
                        << vel.slice(i).col(i)(1) << " "
                        << vel.slice(i).col(i)(2) << endl;
             }
@@ -110,7 +112,7 @@ int main()
 {
     vec pos = {1,0,0};
     vec vel = {0,2*M_PI,0};
-    Planet Earth(pos, vel, 0.00001);
+    Planet Earth(pos, vel, 0.0001);
     vector<Planet> solarsystem = vector<Planet>{Earth};
 
     Verlet solver(solarsystem, 1);
