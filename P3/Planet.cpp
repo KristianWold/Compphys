@@ -44,12 +44,12 @@ private:
     {
         for(int j=0; j<numPlanets-1; j++)
         {
-            totalAcc[j] += newton(pos.slice(j).col(i));
+            totalAcc.col(j) += newton(pos.slice(i).col(j));
             for(int k=j+1; k<numPlanets; k++)
             {
-                mat temp = newton(pos.slice(j).col(i) - pos.slice(k).col(i));
-                totalAcc[j] += planets[k].M*temp;
-                totalAcc[k] -= planets[j].M*temp;
+                mat temp = newton(pos.slice(i).col(j) - pos.slice(i).col(k));
+                totalAcc.col(j) += planets[k].M*temp;
+                totalAcc.col(k) -= planets[j].M*temp;
             }
         }
     }
@@ -65,48 +65,55 @@ public:
     {
         N = int(T/dt);
         t = linspace(0, T, N);
-        pos = zeros(3, n, N);
-        vel = zeros(3, n, N);
+        pos = zeros(3, numPlanets, N);
+        vel = zeros(3, numPlanets, N);
         for(int i=0; i<numPlanets; i++)
         {
             pos.slice(0).col(i) = planets[i].pos;
             vel.slice(0).col(i) = planets[i].vel;
         }
 
-        mat totalAcc(N, n, fill::zeros);
-        mat prevAcc(N, n, fill::zeros);
+        mat totalAcc(3, numPlanets, fill::zeros);
+        mat prevAcc(3, numPlanets, fill::zeros);
         totalAcceleration(totalAcc, 0);
         for(int i=0; i<N-1; i++)
         {
-            pos.col(i+1) = pos.col(i) + vel.col(i)*dt + 0.5*acc(pos.col(i))*dt*dt;
-            vel.col(i+1) = vel.col(i) + 0.5*(acc(pos.col(i+1)) + acc(pos.col(i)))*dt;
+            pos.slice(i+1) = pos.slice(i) + vel.slice(i)*dt + 0.5*totalAcc*dt*dt;
+            prevAcc = totalAcc;
+            totalAcceleration(totalAcc, i+1);
+            vel.slice(i+1) = vel.slice(i) + 0.5*(totalAcc + prevAcc)*dt;
         }
-
-
     }
-/*
+
     void writeToFile(string filename)
     {
 
         ofstream myfile;
         myfile.open(filename);
-        for(int i=0; i<N; i++)
+        for(int i=0; i<numPlanets; i++)
         {
-            myfile << pos.col(i)(0) << " " << pos.col(i)(1) << " " << pos.col(i)(2);
-            myfile << vel.col(i)(0) << " " << vel.col(i)(1) << " " << vel.col(i)(2);
-            myfile << endl;
+            for(int j=0; j<N; j++)
+            {
+                myfile << pos.slice(j).col(i)(0) << " "
+                       << pos.slice(j).col(i)(1) << " "
+                       << pos.slice(j).col(i)(2);
+
+                myfile << vel.slice(j).col(i)(0) << " "
+                       << vel.slice(i).col(i)(1) << " "
+                       << vel.slice(i).col(i)(2) << endl;
+            }
         }
-    }*/
+    }
 };
 
 int main()
 {
     vec pos = {1,0,0};
     vec vel = {0,2*M_PI,0};
-    Planet Earth(pos, vel);
-    vector<Planet> solarsystem(Earth);
+    Planet Earth(pos, vel, 0.00001);
+    vector<Planet> solarsystem = vector<Planet>{Earth};
 
-    Verlet solver(solarsystem);
+    Verlet solver(solarsystem, 1);
     solver.solve(newton, 1, 0.001);
     solver.writeToFile("data.txt");
     return 0;
