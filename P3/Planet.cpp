@@ -9,7 +9,7 @@
 using namespace std;
 using namespace arma;
 
-double scale = 4*M_PI*M_PI;
+double scale = 4*M_PI*M_PI/(365.25*365.25);
 
 vec newton(vec pos)
 {
@@ -118,13 +118,12 @@ public:
     }
 };
 
-int main()
+int main(int argc, char const *argv[])
 {
-    Planet Earth; Earth.M = 1./333000;
-    Planet Jupiter; Jupiter.M = 0.09543;
-    Planet Saturn; Saturn.M = 0.009543;
+    Planet Earth(vec({1,0,0}), vec({0,2*M_PI/365.25,0}),1./333000);
+    //Planet Jupiter; Jupiter.M = 0.0009543;
 
-    vector<Planet> solarsystem = vector<Planet>{Earth, Jupiter, Saturn};
+    vector<Planet> solarsystem = vector<Planet>{Earth};
 
     /*int count = 0;
     ifstream myfile;
@@ -149,19 +148,11 @@ int main()
     }
     myfile.close();
     */
-
-    solarsystem[0].pos = vec({1,0,0});
-    solarsystem[0].vel = vec({0,2*M_PI,0});
-
-    solarsystem[1].pos = vec({3,0,0});
-    solarsystem[1].vel = vec({0,M_PI,0});
-
-    solarsystem[2].pos = vec({5,0,0});
-    solarsystem[2].vel = vec({0,0.5*M_PI,0});
-
-    Verlet solver(solarsystem, 3);
-    solver.solve(newton, 5, 0.0001);
+    Verlet solver(solarsystem, 1);
+    solver.solve(newton, atof(argv[1]), atof(argv[2]));
     solver.writeToFile("data.txt");
+
+    system("python plot.py");
 
     return 0;
 }
