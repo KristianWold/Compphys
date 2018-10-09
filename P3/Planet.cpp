@@ -95,6 +95,42 @@ public:
         }
     }
 
+    mat kinetic()
+    {
+        mat kineticEnergy(N, numPlanets, fill::zeros);
+        for(int i=0; i<N; i++)
+        {
+            for(int j=0; j<numPlanets; j++)
+            {
+                kineticEnergy(i,j) = 0.5*planets[j].M*pow(norm(vel.slice(i).col(j)),2);
+            }
+        }
+        return kineticEnergy;
+    }
+
+    mat potential()
+    {
+        mat potentialEnergy(N, numPlanets, fill::zeros);
+        for(int i=0; i<N; i++)
+        {
+            for(int j=0; j<numPlanets; j++)
+            {
+                //potential energy from sun
+                potentialEnergy(i,j) = -scale*planets[j].M/norm(pos.slice(i).col(j));
+
+                //potential energy inbetween planets
+                for(int k=j+1; k<numPlanets; k++)
+                {
+                    double temp = -scale*planets[j].M*planets[k].M/
+                    norm(vel.slice(i).col(j) - vel.slice(i).col(k));
+                    potentialEnergy(i,j) += temp;
+                    potentialEnergy(i,k) += temp;
+                }
+            }
+        }
+        return potentialEnergy;
+    }
+
     void writeToFile(string filename)
     {
 
@@ -120,7 +156,7 @@ public:
 
 int main(int argc, char const *argv[])
 {
-    Planet Earth(vec({1,0,0}), vec({0,2*M_PI/365.25,0}),1./333000);
+    Planet Earth(vec({1,0,0}), vec({0,M_PI/365.25,0}),1./333000);
     //Planet Jupiter; Jupiter.M = 0.0009543;
 
     vector<Planet> solarsystem = vector<Planet>{Earth};
@@ -151,8 +187,13 @@ int main(int argc, char const *argv[])
     Verlet solver(solarsystem, 1);
     solver.solve(newton, atof(argv[1]), atof(argv[2]));
     solver.writeToFile("data.txt");
+    mat kineticEnergy = solver.kinetic();
+    mat potentialEnergy = solver.potential();
+    mat totalEnergy = kineticEnergy + potentialEnergy;
+    cout << totalEnergy(totalEnergy.index_max(),0) << endl;
+    cout << totalEnergy(totalEnergy.index_min(),0) << endl;
 
-    system("python plot.py");
+    int a = system("python plot.py");
 
     return 0;
 }
