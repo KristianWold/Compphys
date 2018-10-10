@@ -11,7 +11,7 @@ using namespace arma;
 
 double scale = 4*M_PI*M_PI/(365.25*365.25);
 
-vec newton(vec pos)
+vec newton(vec pos, vec vel)
 {
     double rCube = pow(norm(pos), 3);
     return -scale/rCube*pos;
@@ -42,6 +42,10 @@ public:
 class Verlet
 {
 private:
+    //keeps track of if the methods solve() and solveEnergy() have been called
+    bool solved = false;
+    bool solvedEnergy = false;
+
     vec t;
     cube pos;
     cube vel;
@@ -49,15 +53,17 @@ private:
     int numPlanets;
     int N;
 
-    void totalAcceleration(mat &totalAcc, int i)
+    void totalAcceleration(mat &totalAcc, vec acc(vec, vec), int i)
     {
         totalAcc = zeros(3, numPlanets);
         for(int j=0; j<numPlanets; j++)
         {
-            totalAcc.col(j) += newton(pos.slice(i).col(j));
+            totalAcc.col(j) += acc(pos.slice(i).col(j), vel.slice(i).col(j));
             for(int k=j+1; k<numPlanets; k++)
             {
-                mat temp = newton(pos.slice(i).col(j) - pos.slice(i).col(k));
+                vec relpos = pos.slice(i).col(j) - pos.slice(i).col(k);
+                vec relvel = vel.slice(i).col(j) - vel.slice(i).col(k);
+                mat temp = acc(relpos, relvel);
                 totalAcc.col(j) += planets[k].M*temp;
                 totalAcc.col(k) -= planets[j].M*temp;
             }
@@ -65,14 +71,19 @@ private:
     }
 
 public:
+    mat kineticEnergy;
+    mat potentialEnergy;
+    mat angularMomentum;
+
     Verlet(vector<Planet> p, int n)
     {
         planets = p;
         numPlanets = n;
     }
 
-    void solve(vec acc(vec), double T, double dt)
+    void solve(vec acc(vec, vec), double T, double dt)
     {
+        solved = true;
         N = int(T/dt);
         t = linspace(0, T, N);
         pos = zeros(3, numPlanets, N);
@@ -85,55 +96,57 @@ public:
 
         mat totalAcc(3, numPlanets, fill::zeros);
         mat prevAcc(3, numPlanets, fill::zeros);
-        totalAcceleration(totalAcc, 0);
+        totalAcceleration(totalAcc, acc, 0);
         for(int i=0; i<N-1; i++)
         {
             pos.slice(i+1) = pos.slice(i) + vel.slice(i)*dt + 0.5*totalAcc*dt*dt;
             prevAcc = totalAcc;
-            totalAcceleration(totalAcc, i+1);
+            totalAcceleration(totalAcc, acc, i+1);
             vel.slice(i+1) = vel.slice(i) + 0.5*(totalAcc + prevAcc)*dt;
         }
     }
 
-    mat kinetic()
+    void solveEnergy()
     {
-        mat kineticEnergy(N, numPlanets, fill::zeros);
-        for(int i=0; i<N; i++)
+        if (solved == false)
         {
-            for(int j=0; j<numPlanets; j++)
-            {
-                kineticEnergy(i,j) = 0.5*planets[j].M*pow(norm(vel.slice(i).col(j)),2);
-            }
+            throw invalid_argument("Must run .solve() first");
         }
-        return kineticEnergy;
-    }
+        solvedEnergy = true;
+        kineticEnergy = zeros(numPlanets, N);
+        potentialEnergy = zeros(numPlanets, N);
+        angularMomentum = zeros(numPlanets, N);
 
-    mat potential()
-    {
-        mat potentialEnergy(N, numPlanets, fill::zeros);
         for(int i=0; i<N; i++)
         {
             for(int j=0; j<numPlanets; j++)
             {
-                //potential energy from sun
-                potentialEnergy(i,j) = -scale*planets[j].M/norm(pos.slice(i).col(j));
+                kineticEnergy(j,i) = 0.5*planets[j].M*pow(norm(vel.slice(i).col(j)),2);
 
+                //potential energy from sun
+                potentialEnergy(j,i) = -scale*planets[j].M/
+                norm(pos.slice(i).col(j));
                 //potential energy inbetween planets
                 for(int k=j+1; k<numPlanets; k++)
                 {
                     double temp = -scale*planets[j].M*planets[k].M/
                     norm(vel.slice(i).col(j) - vel.slice(i).col(k));
-                    potentialEnergy(i,j) += temp;
-                    potentialEnergy(i,k) += temp;
+                    potentialEnergy(j,i) += temp;
+                    potentialEnergy(k,i) += temp;
                 }
+
+                angularMomentum(j,i) = planets[j].M*
+                norm(cross(pos.slice(i).col(j), vel.slice(i).col(j)));
             }
         }
-        return potentialEnergy;
     }
 
-    void writeToFile(string filename)
+    void coordinatesToFile(string filename)
     {
-
+        if (solved == false)
+        {
+            throw invalid_argument("Must run .solve() before .solveEnergy()");
+        }
         ofstream myfile;
         myfile.open(filename);
         for(int j=0; j<N; j++)
@@ -147,6 +160,28 @@ public:
                        << vel.slice(j).col(i)(0) << " "
                        << vel.slice(i).col(i)(1) << " "
                        << vel.slice(i).col(i)(2) << " ";
+            }
+            myfile << endl;
+        }
+        myfile.close();
+    }
+
+    void energyToFile(string filename)
+    {
+        if (solvedEnergy == false)
+        {
+            throw invalid_argument( "Must run .solveEnergy() before .energyToFile()" );
+        }
+
+        ofstream myfile;
+        myfile.open(filename);
+        for(int i=0; i<N; i++)
+        {
+            for(int j=0; j<numPlanets; j++)
+            {
+                myfile << kineticEnergy(j,i) << " "
+                       << potentialEnergy(j,i) << " "
+                       << angularMomentum(j,i) << " ";
             }
             myfile << endl;
         }
@@ -186,13 +221,10 @@ int main(int argc, char const *argv[])
     */
     Verlet solver(solarsystem, 1);
     solver.solve(newton, atof(argv[1]), atof(argv[2]));
-    solver.writeToFile("data.txt");
-    mat kineticEnergy = solver.kinetic();
-    mat potentialEnergy = solver.potential();
-    mat totalEnergy = kineticEnergy + potentialEnergy;
-    cout << totalEnergy(totalEnergy.index_max(),0) << endl;
-    cout << totalEnergy(totalEnergy.index_min(),0) << endl;
+    solver.solveEnergy();
 
+    solver.coordinatesToFile("coordinates.txt");
+    solver.energyToFile("energy.txt");
     int a = system("python plot.py");
 
     return 0;

@@ -9,7 +9,7 @@ params = {'legend.fontsize': 'large',
           'ytick.labelsize': 'large'}
 plt.rcParams.update(params)
 
-file = "data.txt"
+file = "coordinates.txt"
 
 x1 = np.loadtxt(file, usecols=0)
 y1 = np.loadtxt(file, usecols=1)
