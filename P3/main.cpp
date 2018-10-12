@@ -19,19 +19,10 @@ vec newton(vec pos, vec vel)
     return -scale/rCube*pos;
 }
 
-vec vec3(double x, double y, double z)
-{
-    vec myVec(3,fill::zeros);
-    myVec[0] = x;
-    myVec[1] = y;
-    myVec[3] = x;
-    return myVec;
-}
-
 int main(int argc, char const *argv[])
 {
-    Planet Earth(vec3(1,0,0), vec3(0,2*M_PI/365.25,0),1./333000);
-    Planet Jupiter(vec3(3,0,0), vec3(0,M_PI/365.25,0),0.09543);
+    Planet Earth(vec({1,0,0}), vec({0,2*M_PI/365.25,0}),1./333000);
+    Planet Jupiter(vec({3,0,0}), vec({0,M_PI/365.25,0}),0.09543);
 
     vector<Planet> solarsystem = vector<Planet>{Earth,Jupiter};
 
@@ -60,12 +51,13 @@ int main(int argc, char const *argv[])
     */
 
     Verlet solver(solarsystem, 2, scale);
-    solver.solve(newton, atof(argv[1]), atof(argv[2]));
-    solver.solveEnergy();
+    solver.solve(newton, atof(argv[1]), atoi(argv[2]), atoi(argv[3]));
 
-    solver.coordinatesToFile("coordinates.txt");
-    solver.energyToFile("energy.txt");
-    int a = system("python plot.py");
+//    solver.solveEnergy();
+
+//    solver.coordinatesToFile("coordinates.txt");
+//    solver.energyToFile("energy.txt");
+//    int a = system("python plot.py");
 
     return 0;
 }

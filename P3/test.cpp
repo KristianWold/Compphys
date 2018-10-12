@@ -26,8 +26,7 @@ TEST_CASE("Circular orbit")
     vector<Planet> solarsystem = vector<Planet>{Earth};
     Verlet solver(solarsystem, 1, scale);
 
-    solver.solve(newton, 365.25, 0.01);
-    solver.solveEnergy();
+    solver.solve(newton, 365.25, 1000000, 1000);
 
     vec kinetic = solver.kineticEnergy.col(0);
     double maxKinetic = kinetic(kinetic.index_max());
@@ -56,8 +55,7 @@ TEST_CASE("Elliptic orbit")
     vector<Planet> solarsystem = vector<Planet>{Earth};
     Verlet solver(solarsystem, 1, scale);
 
-    solver.solve(newton, 365.25, 0.01);
-    solver.solveEnergy();
+    solver.solve(newton, 365.25, 1000000, 1000);
 
     vec totalEnergy = solver.kineticEnergy.col(0) + solver.potentialEnergy.col(0);
     double maxEnergy = totalEnergy(totalEnergy.index_max());
@@ -76,8 +74,7 @@ TEST_CASE("Three-body")
     vector<Planet> solarsystem = vector<Planet>{Earth,Jupiter};
     Verlet solver(solarsystem, 2, scale);
 
-    solver.solve(newton, 365.25, 0.01);
-    solver.solveEnergy();
+    solver.solve(newton, 365.25, 1000000, 1000);
 
     vec totalEnergy = solver.kineticEnergy.col(0) + solver.potentialEnergy.col(0)
     + solver.kineticEnergy.col(1) + solver.potentialEnergy.col(1);

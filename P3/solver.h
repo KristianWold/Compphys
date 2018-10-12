@@ -20,12 +20,13 @@ private:
     bool solvedEnergy = false;
 
     vec t;
-    cube pos;
-    cube vel;
+    mat pos;
+    mat vel;
     vector<Planet> planets;
     int numPlanets;
     int N;
     double scale;
+    int countSample;
 
     void totalAcceleration(mat &totalAcc, vec acc(vec, vec), int i);
 
@@ -36,7 +37,7 @@ public:
 
     Verlet(vector<Planet> p, int n, double scale);
 
-    void solve(vec acc(vec, vec), double T, double dt);
+    void solve(vec acc(vec, vec), double T, int N, int sampleN);
 
     void solveEnergy();
 

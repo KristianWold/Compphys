@@ -16,11 +16,11 @@ void Verlet::totalAcceleration(mat &totalAcc, vec acc(vec, vec), int i)
     totalAcc = zeros(3, numPlanets);
     for(int j=0; j<numPlanets; j++)
     {
-        totalAcc.col(j) += acc(pos.slice(i).col(j), vel.slice(i).col(j));
+        totalAcc.col(j) += acc(pos.col(j), vel.col(j));
         for(int k=j+1; k<numPlanets; k++)
         {
-            vec relpos = pos.slice(i).col(j) - pos.slice(i).col(k);
-            vec relvel = vel.slice(i).col(j) - vel.slice(i).col(k);
+            vec relpos = pos.col(j) - pos.col(k);
+            vec relvel = vel.col(j) - vel.col(k);
             mat temp = acc(relpos, relvel);
             totalAcc.col(j) += planets[k].M*temp;
             totalAcc.col(k) -= planets[j].M*temp;
@@ -35,31 +35,76 @@ Verlet::Verlet(vector<Planet> p, int n, double s)
     scale = s;
 }
 
-void Verlet::solve(vec acc(vec, vec), double T, double dt)
+void Verlet::solve(vec acc(vec, vec), double T, int N, int sampleN)
+{
+    solved = true;
+    double dt = T/N;
+    t = linspace(0, T, N);
+    pos = zeros(3, numPlanets);
+    vel = zeros(3, numPlanets);
+    countSample = 0;
+
+    kineticEnergy = zeros(sampleN, numPlanets);
+    potentialEnergy = zeros(sampleN, numPlanets);
+    angularMomentum = zeros(sampleN, numPlanets);
+
+    for(int i=0; i<numPlanets; i++)
     {
-        solved = true;
-        N = int(T/dt);
-        t = linspace(0, T, N);
-        pos = zeros(3, numPlanets, N);
-        vel = zeros(3, numPlanets, N);
-        for(int i=0; i<numPlanets; i++)
-        {
-            pos.slice(0).col(i) = planets[i].pos;
-            vel.slice(0).col(i) = planets[i].vel;
-        }
+        pos.col(i) = planets[i].pos;
+        vel.col(i) = planets[i].vel;
+    }
 
-        mat totalAcc(3, numPlanets, fill::zeros);
-        mat prevAcc(3, numPlanets, fill::zeros);
-        totalAcceleration(totalAcc, acc, 0);
-        for(int i=0; i<N-1; i++)
+    ofstream myfile;
+    myfile.open("data.txt");
+
+    mat totalAcc(3, numPlanets, fill::zeros);
+    mat prevAcc(3, numPlanets, fill::zeros);
+    totalAcceleration(totalAcc, acc, 0);
+    for(int i=0; i<N-1; i++)
+    {
+        pos = pos + vel*dt + 0.5*totalAcc*dt*dt;
+        prevAcc = totalAcc;
+        totalAcceleration(totalAcc, acc, i+1);
+        vel = vel + 0.5*(totalAcc + prevAcc)*dt;
+
+        if (i%sampleN == 0)
         {
-            pos.slice(i+1) = pos.slice(i) + vel.slice(i)*dt + 0.5*totalAcc*dt*dt;
-            prevAcc = totalAcc;
-            totalAcceleration(totalAcc, acc, i+1);
-            vel.slice(i+1) = vel.slice(i) + 0.5*(totalAcc + prevAcc)*dt;
+            for(int j=0; j<numPlanets; j++)
+            {
+                myfile << pos.col(j)(0) << " "
+                       << pos.col(j)(1) << " "
+                       << pos.col(j)(2) << " "
+
+                       << vel.col(j)(0) << " "
+                       << vel.col(j)(1) << " "
+                       << vel.col(j)(2) << " ";
+
+                kineticEnergy(countSample,j) = 0.5*planets[j].M*pow(norm(vel.col(j)),2);
+
+                //potential energy from sun
+                potentialEnergy(countSample,j) = -scale*planets[j].M/
+                norm(pos.col(j));
+                //potential energy inbetween planets
+                for(int k=j+1; k<numPlanets; k++)
+                {
+                    double temp = -scale*planets[j].M*planets[k].M/
+                    norm(pos.col(j) - pos.col(k));
+                    potentialEnergy(countSample,j) += temp;
+                    potentialEnergy(countSample,k) += temp;
+                }
+
+                angularMomentum(countSample,j) = planets[j].M*
+                norm(cross(pos.col(j), vel.col(j)));
+            }
+            myfile << "\n";
+
+            countSample++;
+
         }
+    }
+    myfile.close();
 }
-
+/*
 void Verlet::solveEnergy()
 {
     if (solved == false)
@@ -101,8 +146,6 @@ void Verlet::coordinatesToFile(string filename)
     {
         throw invalid_argument("Must run .solve() before .solveEnergy()");
     }
-    ofstream myfile;
-    myfile.open(filename);
     for(int j=0; j<N; j++)
     {
         for(int i=0; i<numPlanets; i++)
@@ -141,3 +184,4 @@ void Verlet::energyToFile(string filename)
     }
     myfile.close();
 }
+*/
