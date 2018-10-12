@@ -12,5 +12,7 @@ test: test.o planet.o solver.o
 	${CPPflags} -o test.x test.cpp planet.cpp solver.cpp ${LIB}
 	./test.x
 
+
+
 clean:
 	rm -f *.o *.txt *.x

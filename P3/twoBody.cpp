@@ -51,7 +51,6 @@ int main(int argc, char const *argv[])
         velocityVerlet(pos, vel, acceleration, N, dt);
     }
 
-
     ofstream myfile;
     myfile.open("data.txt");
     for(int i=0; i<N; i++)

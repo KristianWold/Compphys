@@ -29,13 +29,13 @@ TEST_CASE("Circular orbit")
     solver.solve(newton, 365.25, 0.01);
     solver.solveEnergy();
 
-    mat kinetic = solver.kineticEnergy.col(0);
+    vec kinetic = solver.kineticEnergy.col(0);
     double maxKinetic = kinetic(kinetic.index_max());
     double minKinetic = kinetic(kinetic.index_min());
     double relKinetic = abs((maxKinetic - minKinetic)/maxKinetic);
     REQUIRE(relKinetic < eps);
 
-    mat potential = solver.potentialEnergy.col(0);
+    vec potential = solver.potentialEnergy.col(0);
     double maxPotential = potential(potential.index_max());
     double minPotential = potential(potential.index_min());
     double relPotential = abs((maxPotential - minPotential)/maxPotential);

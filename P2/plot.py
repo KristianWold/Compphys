@@ -45,7 +45,7 @@ if sys.argv[1] == "benchmark":
     plt.gca().set_ylabel('$\\log_{10}(n)$')
     plt.gca().set_title(title)
     plt.legend(["Number of iterations", fit3])
-    fig2.savefig("./results/benchmark_iter.png")
+    fig2.savefig("./results/benchmark_iter.pdf", bbox_inches ="tight")
 
 if sys.argv[1] == "eigenvectors":
     file = "eigenvec.txt"
