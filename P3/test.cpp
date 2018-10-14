@@ -19,6 +19,8 @@ vec newton(vec pos, vec vel)
 }
 
 TEST_CASE("Circular orbit")
+//Check that the kinetic and potential energy, and angular momentum as well,
+//are conserved independently for circular orbit
 {
     double eps = 1e-5;
 
@@ -48,6 +50,7 @@ TEST_CASE("Circular orbit")
 }
 
 TEST_CASE("Elliptic orbit")
+//Check that combined kinetic and potential energy is conserved
 {
     double eps = 1e-5;
 
@@ -66,6 +69,8 @@ TEST_CASE("Elliptic orbit")
 }
 
 TEST_CASE("Three-body")
+//Check that combined kinetic and potential energy between both planets
+//are conserved
 {
     double eps = 1e-5;
 

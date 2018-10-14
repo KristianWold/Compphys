@@ -2,10 +2,12 @@
 #include <iomanip>
 #include <armadillo>
 #include <fstream>
+#include <math.h>
+#include <string>
 using namespace std;
 using namespace arma;
 
-double scale = 39.485623;
+double scale = 4*M_PI*M_PI/(365.25*365.25);
 
 vec acceleration(vec pos)
 {
@@ -14,51 +16,72 @@ vec acceleration(vec pos)
     return -scale*M/rCube*pos;
 }
 
-void euler(mat &pos, mat &vel, vec acc(vec), int N, double dt)
+void euler(vec pos, vec vel, vec acc(vec), int N, double dt, int sampleN)
 {
+    ofstream myfile;
+    myfile.open("twoBody.txt");
     for(int i=0; i<N-1; i++)
     {
-        vel.col(i+1) = vel.col(i) + acc(pos.col(i))*dt;
-        pos.col(i+1) = pos.col(i) + vel.col(i)*dt;
+        vel = vel + acc(pos)*dt;
+        pos = pos + vel*dt;
+        if(i%sampleN == 0)
+        {
+            myfile << pos(0) << " " << pos(1) << " " << pos(2);
+            myfile << vel(0) << " " << vel(1) << " " << vel(2);
+            myfile << "\n";
+        }
     }
+    myfile.close();
 }
 
-void velocityVerlet(mat &pos, mat &vel, vec acc(vec), int N, double dt)
+void velocityVerlet(vec pos, vec vel, vec acc(vec), int N, double dt, int sampleN)
 {
+    ofstream myfile;
+    myfile.open("twoBody.txt");
+
+    vec prevPos(3,fill::zeros);
     for(int i=0; i<N-1; i++)
     {
-        pos.col(i+1) = pos.col(i) + vel.col(i)*dt + 0.5*acc(pos.col(i))*dt*dt;
-        vel.col(i+1) = vel.col(i) + 0.5*(acc(pos.col(i+1)) + acc(pos.col(i)))*dt;
+        prevPos = pos;
+        pos = pos + vel*dt + 0.5*acc(pos)*dt*dt;
+        vel = vel + 0.5*(acc(pos) + acc(prevPos))*dt;
+        if(i%sampleN == 0)
+        {
+            myfile << pos(0) << " " << pos(1) << " " << pos(2);
+            myfile << vel(0) << " " << vel(1) << " " << vel(2);
+            myfile << "\n";
+        }
     }
+    myfile.close();
 }
 
 int main(int argc, char const *argv[])
 {
-    int solveType = atoi(argv[1]);
-    double T = atof(argv[2]);
-    double dt = atof(argv[3]);
+    int solveType = atoi(argv[1]);  //1 for forward Euler, 2 for velocityVerlet
+    double T = atof(argv[2]);       //final time
+    int N = atoi(argv[3]);          //Number of integration points
+    int sampleN = atoi(argv[4]);    //Increments to write to file
 
-    int N = int(T/dt);
+    double dt = double(T/N);        //timestep
 
-    mat pos(3,N,fill::zeros); pos.col(0) = vec({1,0,0});
-    mat vel(3,N,fill::zeros); vel.col(0) = vec({0,2*M_PI,0});
+    vec pos({1,0,0});
+    vec vel({0,2*M_PI/365.25,0});
     if (solveType == 1)
     {
-        euler(pos, vel, acceleration, N, dt);
+        euler(pos, vel, acceleration, N, dt, sampleN);
     }
     if (solveType == 2)
     {
-        velocityVerlet(pos, vel, acceleration, N, dt);
+        velocityVerlet(pos, vel, acceleration, N, dt, sampleN);
     }
 
-    ofstream myfile;
-    myfile.open("data.txt");
-    for(int i=0; i<N; i++)
+    if(solveType == 1)
     {
-        myfile << pos.col(i)(0) << " " << pos.col(i)(1) << " " << pos.col(i)(2);
-        myfile << vel.col(i)(0) << " " << vel.col(i)(1) << " " << vel.col(i)(2);
-        myfile << endl;
+        system("python3 plot.py twoBody Euler");
     }
-    system("python plot.py");
+    else
+    {
+        system("python3 plot.py twoBody Verlet");
+    }
     return 0;
 }
