@@ -48,7 +48,7 @@ void velocityVerlet(vec pos, vec vel, vec acc(vec), int N, double dt, int sample
         if(i%sampleN == 0)
         {
             myfile << pos(0) << " " << pos(1) << " " << pos(2);
-            myfile << vel(0) << " " << vel(1) << " " << vel(2);
+
             myfile << "\n";
         }
     }
@@ -74,14 +74,4 @@ int main(int argc, char const *argv[])
     {
         velocityVerlet(pos, vel, acceleration, N, dt, sampleN);
     }
-
-    if(solveType == 1)
-    {
-        system("python3 plot.py twoBody Euler");
-    }
-    else
-    {
-        system("python3 plot.py twoBody Verlet");
-    }
-    return 0;
 }

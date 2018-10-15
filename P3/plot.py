@@ -12,14 +12,19 @@ plt.rcParams.update(params)
 
 if sys.argv[1] == "twoBody":
     file = "twoBody.txt"
-    plotname = sys.argv[2]
+    method = sys.argv[2]
+    N = sys.argv[3]
+
     x = np.loadtxt(file, usecols=0)
     y = np.loadtxt(file, usecols=1)
 
-    plt.figure(plotname)
+    fig = plt.figure()
     plt.gca().set_aspect("equal")
     plt.plot(x, y)
-    plt.show()
+    fig.savefig("results/" + "%s, N=%s"%(method,N)+ ".pdf")
+
+
+
 
 
 """
