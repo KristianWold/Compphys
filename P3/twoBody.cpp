@@ -16,10 +16,14 @@ vec acceleration(vec pos)
     return -scale*M/rCube*pos;
 }
 
+
 void euler(vec pos, vec vel, vec acc(vec), int N, double dt, int sampleN)
 {
     ofstream myfile;
     myfile.open("twoBody.txt");
+    myfile << pos(0) << " " << pos(1) << " " << pos(2);
+    myfile << "\n";
+
     for(int i=0; i<N-1; i++)
     {
         vel = vel + acc(pos)*dt;
@@ -27,7 +31,6 @@ void euler(vec pos, vec vel, vec acc(vec), int N, double dt, int sampleN)
         if(i%sampleN == 0)
         {
             myfile << pos(0) << " " << pos(1) << " " << pos(2);
-            myfile << vel(0) << " " << vel(1) << " " << vel(2);
             myfile << "\n";
         }
     }
@@ -38,6 +41,8 @@ void velocityVerlet(vec pos, vec vel, vec acc(vec), int N, double dt, int sample
 {
     ofstream myfile;
     myfile.open("twoBody.txt");
+    myfile << pos(0) << " " << pos(1) << " " << pos(2);
+    myfile << "\n";
 
     vec prevPos(3,fill::zeros);
     for(int i=0; i<N-1; i++)
@@ -69,9 +74,11 @@ int main(int argc, char const *argv[])
     if (solveType == 1)
     {
         euler(pos, vel, acceleration, N, dt, sampleN);
+        cout << "this is euler" << endl;
     }
     if (solveType == 2)
     {
         velocityVerlet(pos, vel, acceleration, N, dt, sampleN);
+        cout << "this is verlet" << endl;
     }
 }
