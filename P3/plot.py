@@ -10,10 +10,8 @@ params = {'legend.fontsize': 'large',
           'ytick.labelsize': 'large'}
 plt.rcParams.update(params)
 
-if sys.argv[1] == "twoBody":
-    file = "twoBody.txt"
-    method = sys.argv[2]
-    N = sys.argv[3]
+if sys.argv[1] == "pos":
+    file = "data.txt"
 
     x = np.loadtxt(file, usecols=0)
     y = np.loadtxt(file, usecols=1)
@@ -21,10 +19,31 @@ if sys.argv[1] == "twoBody":
     fig = plt.figure()
     plt.gca().set_aspect("equal")
     plt.plot(x, y)
-    fig.savefig("results/" + "%s, N=%s"%(method,N)+ ".pdf")
+    plt.show()
 
+if sys.argv[1] == "energy":
+    file = "energy.txt"
 
+    x = np.loadtxt(file, usecols=0)
+    y = np.loadtxt(file, usecols=1)
 
+    fig = plt.figure()
+    #plt.gca().set_aspect("equal")
+    plt.plot(np.linspace(0,1,len(x)),x)
+    plt.plot(np.linspace(0,1,len(y)),y)
+    plt.grid(True)
+    plt.show()
+
+if sys.argv[1] == "fluctuation":
+    file = "fluctuation.txt"
+
+    n = np.loadtxt(file, usecols=0)
+    y = np.loadtxt(file, usecols=1)
+
+    fig = plt.figure()
+    plt.plot(np.log10(n),np.log10(y))
+    plt.grid(True)
+    plt.show()
 
 
 """

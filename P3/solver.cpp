@@ -35,17 +35,15 @@ void Solver::coordinatesToFile(ofstream &myfile)
     {
         myfile << pos.col(j)(0) << " "
                << pos.col(j)(1) << " "
-               << pos.col(j)(2) << " "
-
-               << vel.col(j)(0) << " "
-               << vel.col(j)(1) << " "
-               << vel.col(j)(2) << " ";
+               << pos.col(j)(2) << " ";
     }
     myfile << "\n";
 }
 
-void Solver::sampleEnergyAndAngular(mat &kinetic, mat &potential, mat &angular, int i)
+void Solver::sampleEnergyAndAngular(mat &kinetic, mat &potential,
+                                    vec &energyAllPlanets, vec &angular, int i)
 {
+    vec totalAngular(3,fill::zeros);
     for(int j=0; j<numPlanets; j++)
     {
 
@@ -62,10 +60,27 @@ void Solver::sampleEnergyAndAngular(mat &kinetic, mat &potential, mat &angular, 
             potentialEnergy(i,j) += temp;
             potentialEnergy(i,k) += temp;
         }
-
-        angularMomentum(i,j) = planets[j].M*norm(cross(pos.col(j), vel.col(j)));
+        energyAllPlanets(i) += kineticEnergy(i,j) + potentialEnergy(i,j);
+        totalAngular += planets[j].M*cross(pos.col(j), vel.col(j));
     }
+    angularMomentum(i) = norm(totalAngular);
 
+}
+
+void Solver::euler(vec acc(vec, vec))
+{
+    prevVel = vel;
+    vel = vel + totalAcc*dt;
+    pos = pos + prevVel*dt;
+    totalAcceleration(totalAcc, acc);
+}
+
+void Solver::verlet(vec acc(vec, vec))
+{
+    pos = pos + vel*dt + 0.5*totalAcc*dt*dt;
+    prevAcc = totalAcc;
+    totalAcceleration(totalAcc, acc);
+    vel = vel + 0.5*(totalAcc + prevAcc)*dt;
 }
 
 Solver::Solver(vector<Planet> planets_, double scale_)
@@ -75,18 +90,18 @@ Solver::Solver(vector<Planet> planets_, double scale_)
     scale = scale_;
 }
 
-void Solver::solveVerlet(vec acc(vec, vec), double T, int N, int sampleN)
+void Solver::solve(int method, vec acc(vec, vec), double T, int N, int sampleN)
 {
     solved = true;
-    double dt = T/N;
+    dt = T/N;
     t = linspace(0, T, N);
     pos = zeros(3, numPlanets);
     vel = zeros(3, numPlanets);
-    countSample = 0;
 
-    kineticEnergy = zeros(sampleN, numPlanets);
-    potentialEnergy = zeros(sampleN, numPlanets);
-    angularMomentum = zeros(sampleN, numPlanets);
+    kineticEnergy      = zeros(N/sampleN, numPlanets);
+    potentialEnergy    = zeros(N/sampleN, numPlanets);
+    energyAllPlanets   = zeros(N/sampleN);
+    angularMomentum    = zeros(N/sampleN);
 
     for(int i=0; i<numPlanets; i++)
     {
@@ -98,25 +113,63 @@ void Solver::solveVerlet(vec acc(vec, vec), double T, int N, int sampleN)
     ofstream myfile;
     myfile.open("data.txt");
 
-    mat totalAcc(3, numPlanets, fill::zeros);
-    mat prevAcc(3, numPlanets, fill::zeros);
+    totalAcc = zeros(3, numPlanets);
+    prevAcc = zeros(3, numPlanets);
+    prevVel = zeros(3, numPlanets);
+
     totalAcceleration(totalAcc, acc);
+
+    coordinatesToFile(myfile);
+    sampleEnergyAndAngular(kineticEnergy, potentialEnergy,
+        energyAllPlanets, angularMomentum, 0);
 
     for(int i=0; i<N-1; i++)
     {
-        if (i%sampleN == 0)
+        if(method == 1) euler(acc);
+        if(method == 2) verlet(acc);
+        if ((i+1)%sampleN == 0)
         {
             coordinatesToFile(myfile);
             sampleEnergyAndAngular(kineticEnergy, potentialEnergy,
-                angularMomentum, i/sampleN);
+                energyAllPlanets, angularMomentum, (i+1)/sampleN);
         }
-
+/*
         pos = pos + vel*dt + 0.5*totalAcc*dt*dt;
         prevAcc = totalAcc;
         totalAcceleration(totalAcc, acc);
         vel = vel + 0.5*(totalAcc + prevAcc)*dt;
-
-
+*/
     }
     myfile.close();
+}
+
+double Solver::kineticFluctuation(int i)
+{
+    vec kinetic = kineticEnergy.col(i);
+    double maxKinetic = kinetic(kinetic.index_max());
+    double minKinetic = kinetic(kinetic.index_min());
+    return abs((maxKinetic - minKinetic)/maxKinetic);
+}
+
+double Solver::potentialFluctuation(int i)
+{
+    vec potential = potentialEnergy.col(i);
+    double maxPotential = potential(potential.index_max());
+    double minPotential = potential(potential.index_min());
+    return abs((maxPotential - minPotential)/maxPotential);
+}
+
+double Solver::totalEnergyFluctuation()
+{
+
+    double maxEnergy = energyAllPlanets(energyAllPlanets.index_max());
+    double minEnergy = energyAllPlanets(energyAllPlanets.index_min());
+    return abs((maxEnergy - minEnergy)/maxEnergy);
+}
+
+double Solver::angularFluctuation()
+{
+    double maxAngular = angularMomentum(angularMomentum.index_max());
+    double minAngular = angularMomentum(angularMomentum.index_min());
+    return abs((maxAngular - minAngular)/maxAngular);
 }

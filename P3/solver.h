@@ -26,21 +26,34 @@ private:
     int numPlanets;
     int N;
     double scale;
-    int countSample;
+    double dt;
 
     void totalAcceleration(mat &totalAcc, vec acc(vec, vec));
     void coordinatesToFile(ofstream &myfile);
+    void euler(vec acc(vec,vec));
+    void verlet(vec acc(vec,vec));
+
+    mat totalAcc;
+    mat prevAcc;
+    mat prevVel;
 
 public:
     mat kineticEnergy;
     mat potentialEnergy;
-    mat angularMomentum;
+    vec energyAllPlanets;
+    vec angularMomentum;
 
     Solver(vector<Planet> p, double scale);
 
-    void solveVerlet(vec acc(vec, vec), double T, int N, int sampleN);
+    void solve(int method, vec acc(vec, vec), double T, int N, int sampleN);
 
-    void sampleEnergyAndAngular(mat &kinetic, mat &potential, mat &angular, int i);
+    void sampleEnergyAndAngular(mat &kinetic, mat &potential, vec &angular,
+                                vec &energyAllPlanets, int i);
+
+    double kineticFluctuation(int i);
+    double potentialFluctuation(int i);
+    double totalEnergyFluctuation();
+    double angularFluctuation();
 };
 
 #endif
