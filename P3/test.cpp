@@ -26,9 +26,9 @@ TEST_CASE("Circular orbit")
 
     Planet Earth(vec({1,0,0}), vec({0,2*M_PI/365.25,0}),1./333000);
     vector<Planet> solarsystem = vector<Planet>{Earth};
-    Verlet solver(solarsystem, 1, scale);
+    Solver solver(solarsystem, scale);
 
-    solver.solve(newton, 365.25, 1000000, 1000);
+    solver.solveVerlet(newton, 365.25, 1000000, 1000);
 
     vec kinetic = solver.kineticEnergy.col(0);
     double maxKinetic = kinetic(kinetic.index_max());
@@ -56,9 +56,9 @@ TEST_CASE("Elliptic orbit")
 
     Planet Earth(vec({1,0,0}), vec({0,M_PI/365.25,0}),1./333000);
     vector<Planet> solarsystem = vector<Planet>{Earth};
-    Verlet solver(solarsystem, 1, scale);
+    Solver solver(solarsystem, scale);
 
-    solver.solve(newton, 365.25, 1000000, 1000);
+    solver.solveVerlet(newton, 365.25, 1000000, 1000);
 
     vec totalEnergy = solver.kineticEnergy.col(0) + solver.potentialEnergy.col(0);
     double maxEnergy = totalEnergy(totalEnergy.index_max());
@@ -77,9 +77,9 @@ TEST_CASE("Three-body")
     Planet Earth(vec({1,0,0}), vec({0,2*M_PI/365.25,0}),1./333000);
     Planet Jupiter(vec({3,0,0}), vec({0,M_PI/365.25,0}),0.09);
     vector<Planet> solarsystem = vector<Planet>{Earth,Jupiter};
-    Verlet solver(solarsystem, 2, scale);
+    Solver solver(solarsystem, scale);
 
-    solver.solve(newton, 365.25, 1000000, 1000);
+    solver.solveVerlet(newton, 365.25, 1000000, 1000);
 
     vec totalEnergy = solver.kineticEnergy.col(0) + solver.potentialEnergy.col(0)
     + solver.kineticEnergy.col(1) + solver.potentialEnergy.col(1);

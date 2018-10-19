@@ -24,15 +24,20 @@ void euler(vec pos, vec vel, vec acc(vec), int N, double dt, int sampleN)
     myfile << pos(0) << " " << pos(1) << " " << pos(2);
     myfile << "\n";
 
+    vec kineticEnergy(sampleN, fill::zeros);
+    vec potentialEnergy(sampleN, fill::zeros);
     for(int i=0; i<N-1; i++)
     {
-        vel = vel + acc(pos)*dt;
-        pos = pos + vel*dt;
         if(i%sampleN == 0)
         {
             myfile << pos(0) << " " << pos(1) << " " << pos(2);
             myfile << "\n";
+
         }
+
+        vel = vel + acc(pos)*dt;
+        pos = pos + vel*dt;
+
     }
     myfile.close();
 }

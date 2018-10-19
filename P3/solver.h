@@ -12,7 +12,7 @@
 using namespace std;
 using namespace arma;
 
-class Verlet
+class Solver
 {
 private:
     //keeps track of if the methods solve() and solveEnergy() have been called
@@ -28,22 +28,19 @@ private:
     double scale;
     int countSample;
 
-    void totalAcceleration(mat &totalAcc, vec acc(vec, vec), int i);
+    void totalAcceleration(mat &totalAcc, vec acc(vec, vec));
+    void coordinatesToFile(ofstream &myfile);
 
 public:
     mat kineticEnergy;
     mat potentialEnergy;
     mat angularMomentum;
 
-    Verlet(vector<Planet> p, int n, double scale);
+    Solver(vector<Planet> p, double scale);
 
-    void solve(vec acc(vec, vec), double T, int N, int sampleN);
+    void solveVerlet(vec acc(vec, vec), double T, int N, int sampleN);
 
-    void solveEnergy();
-
-    void coordinatesToFile(string filename);
-
-    void energyToFile(string filename);
+    void sampleEnergyAndAngular(mat &kinetic, mat &potential, mat &angular, int i);
 };
 
 #endif
