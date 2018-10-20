@@ -95,7 +95,7 @@ void Solver::solve(int method, vec acc(vec, vec), double T, int N, int sampleN)
 {
     solved = true;
     dt = T/N;
-    t = linspace(0, T, N);
+    //t = linspace(0, T, N);
     pos = zeros(3, numPlanets);
     vel = zeros(3, numPlanets);
 

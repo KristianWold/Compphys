@@ -6,8 +6,8 @@
 #include <string>
 #include <sstream>
 #include <iterator>
-#include "solver.h"
-#include "planet.h"
+#include "Classes/solver.h"
+#include "Classes/planet.h"
 using namespace std;
 using namespace arma;
 

@@ -5,8 +5,8 @@
 #include <armadillo>
 #include <fstream>
 #include <vector>
-#include "solver.h"
-#include "planet.h"
+#include "Classes/solver.h"
+#include "Classes/planet.h"
 using namespace std;
 using namespace arma;
 

@@ -21,8 +21,9 @@ vec newton(vec pos, vec vel)
 
 int main(int argc, char const *argv[])
 {
-    Planet Earth(vec({1,0,0}), vec({0,sqrt(2)*2*M_PI,0}),1./333000);
-    vector<Planet> solarsystem = vector<Planet>{Earth};
+    Planet Earth(vec({1,0,0}), vec({0,2*M_PI,0}),3e-6);
+    Planet Jupiter(vec({5,0,0}), vec({0,3,0}),1);
+    vector<Planet> solarsystem = vector<Planet>{Earth, Jupiter};
     Solver solver(solarsystem, scale);
 
     double T = atof(argv[1]);
@@ -30,7 +31,22 @@ int main(int argc, char const *argv[])
     int sampleN = atoi(argv[3]);
 
     solver.solve(2, newton, T, N, sampleN);
+
     system("python3 plot.py pos");
+    /*
+    ofstream myfile;
+    myfile.open("fluctuation.txt");
+
+    for(int n = 100; n<=1e8; n*=10)
+    {
+        Solver solver(solarsystem, scale);
+        solver.solve(2, newton, T, n, n/10);
+        myfile << n << " " << solver.totalEnergyFluctuation() << "\n";
+        cout << n << endl;
+    }
+    myfile.close();
+
+    system("python3 plot.py fluctuation");*/
 
     return 0;
 }
