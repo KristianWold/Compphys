@@ -51,7 +51,7 @@ void Solver::sampleEnergyAndAngular(mat &kinetic, mat &potential,
 
         //potential energy from sun
         potentialEnergy(i,j) = -scale*planets[j].M/norm(pos.col(j));
-
+        energyAllPlanets(i) = +potentialEnergy(i,j);
         //potential energy inbetween planets
         for(int k=j+1; k<numPlanets; k++)
         {
@@ -59,8 +59,9 @@ void Solver::sampleEnergyAndAngular(mat &kinetic, mat &potential,
             norm(pos.col(j) - pos.col(k));
             potentialEnergy(i,j) += temp;
             potentialEnergy(i,k) += temp;
+            energyAllPlanets(i)  += temp;
         }
-        energyAllPlanets(i) += kineticEnergy(i,j) + potentialEnergy(i,j);
+        energyAllPlanets(i) += kineticEnergy(i,j);
         totalAngular += planets[j].M*cross(pos.col(j), vel.col(j));
     }
     angularMomentum(i) = norm(totalAngular);
