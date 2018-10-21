@@ -26,53 +26,62 @@ int main(int argc, char const *argv[])
     Solver solverEuler(solarsystem, scale);
     Solver solverVerlet(solarsystem, scale);
 
-    double T = atof(argv[1]);
-    int N = atoi(argv[2]);
-    int sampleN = atoi(argv[3]);
+    solverEuler.solve(1, newton, 5, 100, 1);
+    system("python3 plot.py singlePlanet Euler 5 100");
 
-    solverEuler.solve(1, newton, T, N, sampleN);
-    system("python3 plot.py pos");
+    solverEuler.solve(1, newton, 5, 1000, 1);
+    system("python3 plot.py singlePlanet Euler 5 1000");
 
-    solverVerlet.solve(2, newton, T, N, sampleN);
+    solverEuler.solve(1, newton, 5, 10000, 1);
+    system("python3 plot.py singlePlanet Euler 5 10000");
 
-    system("python3 plot.py pos");
+
+    solverVerlet.solve(2, newton, 5, 100, 1);
+    system("python3 plot.py singlePlanet Verlet 5 100");
+
+    solverVerlet.solve(2, newton, 5, 1000, 1);
+    system("python3 plot.py singlePlanet Verlet 5 1000");
+
+    solverVerlet.solve(2, newton, 5, 10000, 1);
+    system("python3 plot.py singlePlanet Verlet 5 10000");
+
 
     ofstream myfile;
     myfile.open("energy.txt");
-    for(int i=0; i<N/sampleN; i++)
+    for(int i=0; i<10000; i++)
     {
         myfile << setprecision(8)
                << solverEuler.energyAllPlanets(i) << " "
                << solverVerlet.energyAllPlanets(i) << "\n";
     }
     myfile.close();
-    system("python3 plot.py energy");
+    system("python3 plot.py energy 5 10000");
 
     myfile.open("fluctuation.txt");
 
     for(int n = 100; n<=1e8; n*=10)
     {
         Solver solver(solarsystem, scale);
-        solver.solve(1, newton, T, n, n/10);
+        solver.solve(1, newton, 5, n, n/100);
         myfile << n << " " << solver.totalEnergyFluctuation() << "\n";
         cout << n << endl;
     }
     myfile.close();
 
-    system("python3 plot.py fluctuation");
+    system("python3 plot.py fluctuation Euler");
 
     myfile.open("fluctuation.txt");
 
     for(int n = 100; n<=1e8; n*=10)
     {
         Solver solver(solarsystem, scale);
-        solver.solve(2, newton, T, n, n/10);
+        solver.solve(2, newton, 5, n, n/10);
         myfile << n << " " << solver.totalEnergyFluctuation() << "\n";
         cout << n << endl;
     }
     myfile.close();
 
-    system("python3 plot.py fluctuation");
+    system("python3 plot.py fluctuation Verlet");
 
     return 0;
 }

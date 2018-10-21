@@ -134,12 +134,7 @@ void Solver::solve(int method, vec acc(vec, vec), double T, int N, int sampleN)
             sampleEnergyAndAngular(kineticEnergy, potentialEnergy,
                 energyAllPlanets, angularMomentum, (i+1)/sampleN);
         }
-/*
-        pos = pos + vel*dt + 0.5*totalAcc*dt*dt;
-        prevAcc = totalAcc;
-        totalAcceleration(totalAcc, acc);
-        vel = vel + 0.5*(totalAcc + prevAcc)*dt;
-*/
+
     }
     myfile.close();
 }

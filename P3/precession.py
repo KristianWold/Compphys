@@ -10,16 +10,15 @@ z = np.loadtxt(file, usecols=2)
 
 r = np.sqrt(x*x + y*y + z*z)
 
-atPerihelion = False
-rPerihelion = 0.3075
-eps = 1e-4
+angle = []
 
-for i in range(len(x)):
-    if abs((r[i]-rPerihelion)/rPerihelion) < eps and not atPerihelion:
-        atPerihelion = True
+for i in range(1,len(x)-1):
+    if ((r[i-1] > r[i]) and (r[i+1] > r[i])):
         angle.append(y[i]/x[i])
 
-    if abs((r[i]-rPerihelion)/rPerihelion) > eps and atPerihelion:
-        atPerihelion = False
 
-print np.arctan(angle)
+#plt.plot(x,y)
+
+plt.plot(np.arctan(angle))
+print(len(angle))
+plt.show()

@@ -44,6 +44,8 @@ int main(int argc, char const *argv[])
 
     solver.solve(2, einstein, T, N, sampleN);
 
+    //system("python3 plot.py pos");
+
     system("python3 precession.py");
 
     return 0;
