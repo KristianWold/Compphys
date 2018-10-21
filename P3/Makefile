@@ -34,10 +34,10 @@ allPlanets.o: allPlanets.cpp
 	${CXX} ${CPPflags} -c $^ ${INCL} ${LIB}
 
 
-escapeVel.x: main.o $(OBJS)
+escapeVel.x: escapeVel.o $(OBJS)
 	${CXX} ${CPPflags} -o $@ $^ ${INCL} ${LIB}
 
-escapeVel.o: main.cpp
+escapeVel.o: escapeVel.cpp
 	${CXX} ${CPPflags} -c $^ ${INCL} ${LIB}
 
 

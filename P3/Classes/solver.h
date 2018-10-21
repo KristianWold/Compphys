@@ -45,7 +45,9 @@ public:
 
     Solver(vector<Planet> p, double scale);
 
-    void solve(int method, vec acc(vec, vec), double T, int N, int sampleN);
+    void solve(int method, vec acc(vec, vec), double T, int N, int sampleN, string name);
+
+    void solvePerihelion(vec acc(vec, vec), double T, int N, string name);
 
     void sampleEnergyAndAngular(mat &kinetic, mat &potential, vec &angular,
                                 vec &energyAllPlanets, int i);

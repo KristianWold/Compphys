@@ -91,7 +91,7 @@ Solver::Solver(vector<Planet> planets_, double scale_)
     scale = scale_;
 }
 
-void Solver::solve(int method, vec acc(vec, vec), double T, int N, int sampleN)
+void Solver::solve(int method, vec acc(vec, vec), double T, int N, int sampleN, string name)
 {
     solved = true;
     dt = T/N;
@@ -112,7 +112,7 @@ void Solver::solve(int method, vec acc(vec, vec), double T, int N, int sampleN)
     }
 
     ofstream myfile;
-    myfile.open("data.txt");
+    myfile.open(name);
 
     totalAcc = zeros(3, numPlanets);
     prevAcc = zeros(3, numPlanets);
@@ -135,6 +135,46 @@ void Solver::solve(int method, vec acc(vec, vec), double T, int N, int sampleN)
                 energyAllPlanets, angularMomentum, (i+1)/sampleN);
         }
 
+    }
+    myfile.close();
+}
+
+void Solver::solvePerihelion(vec acc(vec, vec), double T, int N, string name)
+{
+    dt = T/N;
+    //t = linspace(0, T, N);
+    pos = zeros(3, numPlanets);
+    vel = zeros(3, numPlanets);
+
+    for(int i=0; i<numPlanets; i++)
+    {
+        //initial conditions
+        pos.col(i) = planets[i].pos;
+        vel.col(i) = planets[i].vel;
+    }
+
+    ofstream myfile;
+    myfile.open(name);
+
+    totalAcc = zeros(3, numPlanets);
+    prevAcc = zeros(3, numPlanets);
+    vec prevPrevPos = pos.col(0);
+
+    totalAcceleration(totalAcc, acc);
+    verlet(acc);
+    vec prevPos = pos.col(0);
+
+    verlet(acc);
+
+    for(int i=0; i<N-1; i++)
+    {
+        if ((norm(prevPos) < norm(prevPrevPos)) and (norm(prevPos) < norm(pos.col(0))))
+        {
+            myfile << prevPos(1)/prevPos(0) << "\n";
+        }
+        prevPrevPos = prevPos;
+        prevPos = pos.col(0);
+        verlet(acc);
     }
     myfile.close();
 }

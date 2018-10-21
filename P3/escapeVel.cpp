@@ -21,16 +21,19 @@ vec newton(vec pos, vec vel)
 
 int main(int argc, char const *argv[])
 {
-    Planet Earth(vec({1,0,0}), vec({0,sqrt(2)*2*M_PI,0}),1./333000);
+    double T = 5;
+    int N = 100000;
+    int sampleN = 10;
+
+    Planet Earth(vec({1,0,0}), vec({0,0,0}),1./333000);
     vector<Planet> solarsystem = vector<Planet>{Earth};
-    Solver solver(solarsystem, scale);
 
-    double T = atof(argv[1]);
-    int N = atoi(argv[2]);
-    int sampleN = atoi(argv[3]);
-
-    solver.solve(2, newton, T, N, sampleN);
-    system("python3 plot.py pos");
-
+    for(int i = 0; i<6; i++)
+    {
+        solarsystem[0].vel(1) = sqrt(1+0.25*i)*2*M_PI;
+        Solver solver(solarsystem, scale);
+        solver.solve(2, newton, T, N, sampleN, "data" + to_string(i) + ".txt");
+    }
+    system("python3 plot.py escapeVel");
     return 0;
 }

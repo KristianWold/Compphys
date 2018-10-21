@@ -40,11 +40,9 @@ int main(int argc, char const *argv[])
 
     double T = atof(argv[1]);
     int N = atoi(argv[2]);
-    int sampleN = atoi(argv[3]);
 
-    solver.solve(2, einstein, T, N, sampleN);
-
-    //system("python3 plot.py pos");
+    solver.solvePerihelion(newton, T, N, "angle1.txt");
+    solver.solvePerihelion(newton, T, N, "angle2.txt");
 
     system("python3 precession.py");
 

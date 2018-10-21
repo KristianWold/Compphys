@@ -13,7 +13,6 @@ plt.rcParams.update(params)
 if sys.argv[1] == "pos":
     file = "data.txt"
 
-
     x = np.loadtxt(file, usecols=0)
     y = np.loadtxt(file, usecols=1)
 
@@ -40,9 +39,9 @@ if sys.argv[1] == "singlePlanet":
     plt.gca().set_aspect("equal")
     plt.xlabel("AU")
     plt.ylabel("AU")
-    plt.legend(["T=%s yr, N=%s, using %s"%(T,N,name)])
-    plt.plot(x,y)
-    fig.savefig("results/T=%s_N=%s_%s.pdf"%(T,N,name))
+    plt.legend(["T=%s yr, N=%s, using %s" % (T, N, name)])
+    plt.plot(x, y)
+    fig.savefig("results/T=%s_N=%s_%s.pdf" % (T, N, name))
 
 if sys.argv[1] == "energy":
     file = "energy.txt"
@@ -54,12 +53,12 @@ if sys.argv[1] == "energy":
     y = np.loadtxt(file, usecols=1)
 
     fig = plt.figure()
-    plt.plot(np.linspace(0,T,len(x)),x)
-    plt.plot(np.linspace(0,T,len(x)),y)
+    plt.plot(np.linspace(0, T, len(x)), x)
+    plt.plot(np.linspace(0, T, len(x)), y)
     plt.grid(True)
     plt.xlabel("T")
     plt.ylabel("E")
-    plt.legend(["Euler","Verlet"])
+    plt.legend(["Euler", "Verlet"])
     fig.savefig("results/EulerVsVerlet_T=5_N=10000.pdf")
 
 if sys.argv[1] == "fluctuation":
@@ -71,11 +70,28 @@ if sys.argv[1] == "fluctuation":
     y = np.loadtxt(file, usecols=1)
 
     fig = plt.figure()
-    plt.plot(np.log10(n),np.log10(y))
+    plt.plot(np.log10(n), np.log10(y))
     plt.xlabel("log10(N)")
     plt.ylabel("log10($\\epsilon$)")
     plt.grid(True)
-    fig.savefig("results/fluctuation_%s.pdf"%name)
+    fig.savefig("results/fluctuation_%s.pdf" % name)
+
+if sys.argv[1] == "escapeVel":
+    mylegend = []
+
+    fig = plt.figure()
+    for i in range(6):
+        file = "data%s.txt" % i
+
+        x = np.loadtxt(file, usecols=0)
+        y = np.loadtxt(file, usecols=1)
+        mylegend.append("Vel = sqrt(%s)*2*pi" % (1 + 0.25 * i))
+        plt.plot(x, y)
+    plt.xlabel("AU")
+    plt.ylabel("AU")
+    plt.grid(True)
+    plt.legend(mylegend)
+    fig.savefig("results/escapeVel.pdf")
 
 
 """

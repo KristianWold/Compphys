@@ -2,23 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 
-file = "data.txt"
+file1 = "angle1.txt"
 
-x = np.loadtxt(file, usecols=0)
-y = np.loadtxt(file, usecols=1)
-z = np.loadtxt(file, usecols=2)
+angle = np.loadtxt(file1, usecols=0)
 
-r = np.sqrt(x*x + y*y + z*z)
-
-angle = []
-
-for i in range(1,len(x)-1):
-    if ((r[i-1] > r[i]) and (r[i+1] > r[i])):
-        angle.append(y[i]/x[i])
-
-
-#plt.plot(x,y)
-
+fig = plt.figure()
 plt.plot(np.arctan(angle))
-print(len(angle))
-plt.show()
+fig.savefig("results/precessionNewton.pdf")
+
+file2 = "angle2.txt"
+angle = np.loadtxt(file2, usecols=0)
+
+fig = plt.figure()
+plt.plot(np.arctan(angle))
+fig.savefig("results/precessionEinstein.pdf")

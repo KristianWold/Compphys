@@ -28,7 +28,7 @@ TEST_CASE("Circular orbit")
     vector<Planet> solarsystem = vector<Planet>{Earth};
     Solver solver(solarsystem, scale);
 
-    solver.solve(2, newton, 365.25, 1000000, 1000);
+    solver.solve(2, newton, 365.25, 1000000, 1000, "data.txt");
 
     REQUIRE(solver.kineticFluctuation(0) < eps);
     REQUIRE(solver.potentialFluctuation(0) < eps);
@@ -44,7 +44,7 @@ TEST_CASE("Elliptic orbit")
     vector<Planet> solarsystem = vector<Planet>{Earth};
     Solver solver(solarsystem, scale);
 
-    solver.solve(2 ,newton, 365.25, 1000000, 1000);
+    solver.solve(2 ,newton, 365.25, 1000000, 1000, "data.txt");
 
     REQUIRE(solver.totalEnergyFluctuation() < eps);
     REQUIRE(solver.angularFluctuation() < eps);
@@ -61,7 +61,7 @@ TEST_CASE("Three-body")
     vector<Planet> solarsystem = vector<Planet>{Earth,Jupiter};
     Solver solver(solarsystem, scale);
 
-    solver.solve(2, newton, 365.25, 1000000, 1000);
+    solver.solve(2, newton, 365.25, 1000000, 1000, "data.txt");
     REQUIRE(solver.totalEnergyFluctuation() < eps);
     REQUIRE(solver.angularFluctuation() < eps);
 }

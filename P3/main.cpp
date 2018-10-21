@@ -26,23 +26,23 @@ int main(int argc, char const *argv[])
     Solver solverEuler(solarsystem, scale);
     Solver solverVerlet(solarsystem, scale);
 
-    solverEuler.solve(1, newton, 5, 100, 1);
+    solverEuler.solve(1, newton, 5, 100, 1, "data.txt");
     system("python3 plot.py singlePlanet Euler 5 100");
 
-    solverEuler.solve(1, newton, 5, 1000, 1);
+    solverEuler.solve(1, newton, 5, 1000, 1, "data.txt");
     system("python3 plot.py singlePlanet Euler 5 1000");
 
-    solverEuler.solve(1, newton, 5, 10000, 1);
+    solverEuler.solve(1, newton, 5, 10000, 1, "data.txt");
     system("python3 plot.py singlePlanet Euler 5 10000");
 
 
-    solverVerlet.solve(2, newton, 5, 100, 1);
+    solverVerlet.solve(2, newton, 5, 100, 1, "data.txt");
     system("python3 plot.py singlePlanet Verlet 5 100");
 
-    solverVerlet.solve(2, newton, 5, 1000, 1);
+    solverVerlet.solve(2, newton, 5, 1000, 1, "data.txt");
     system("python3 plot.py singlePlanet Verlet 5 1000");
 
-    solverVerlet.solve(2, newton, 5, 10000, 1);
+    solverVerlet.solve(2, newton, 5, 10000, 1, "data.txt");
     system("python3 plot.py singlePlanet Verlet 5 10000");
 
 
@@ -62,7 +62,7 @@ int main(int argc, char const *argv[])
     for(int n = 100; n<=1e8; n*=10)
     {
         Solver solver(solarsystem, scale);
-        solver.solve(1, newton, 5, n, n/100);
+        solver.solve(1, newton, 5, n, n/100, "data.txt");
         myfile << n << " " << solver.totalEnergyFluctuation() << "\n";
         cout << n << endl;
     }
@@ -75,7 +75,7 @@ int main(int argc, char const *argv[])
     for(int n = 100; n<=1e8; n*=10)
     {
         Solver solver(solarsystem, scale);
-        solver.solve(2, newton, 5, n, n/10);
+        solver.solve(2, newton, 5, n, n/10, "data.txt");
         myfile << n << " " << solver.totalEnergyFluctuation() << "\n";
         cout << n << endl;
     }
