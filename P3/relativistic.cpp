@@ -42,7 +42,7 @@ int main(int argc, char const *argv[])
     int N = atoi(argv[2]);
 
     solver.solvePerihelion(newton, T, N, "angle1.txt");
-    solver.solvePerihelion(newton, T, N, "angle2.txt");
+    solver.solvePerihelion(einstein, T, N, "angle2.txt");
 
     system("python3 precession.py");
 
