@@ -34,7 +34,7 @@ int main(int argc, char const *argv[])
     ofstream myfile;
     myfile.open("fluctuation.txt");
 
-    for(int n = 100; n<=1e7; n*=10)
+    for(int n = 100; n<=1e8; n*=10)
     {
         Solver solver(solarsystem, scale);
         solver.solve(1, newton, 5, n, n/100, "data.txt");
