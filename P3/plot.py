@@ -13,16 +13,16 @@ plt.rcParams.update(params)
 if sys.argv[1] == "pos":
     file = "data.txt"
 
-    x = np.loadtxt(file, usecols=0)
-    y = np.loadtxt(file, usecols=1)
+    x1 = np.loadtxt(file, usecols=0)
+    y1 = np.loadtxt(file, usecols=1)
 
-    #x2 = np.loadtxt(file, usecols=3)
-    #y2 = np.loadtxt(file, usecols=4)
+    x2 = np.loadtxt(file, usecols=3)
+    y2 = np.loadtxt(file, usecols=4)
 
     fig = plt.figure()
     plt.gca().set_aspect("equal")
-    plt.plot(x, y)
-    #plt.plot(x2, y2)
+    plt.plot(x1, y1)
+    plt.plot(x2, y2)
     plt.show()
 
 if sys.argv[1] == "singlePlanet":
@@ -75,6 +75,24 @@ if sys.argv[1] == "fluctuation":
     plt.ylabel("log10($\\epsilon$)")
     plt.grid(True)
     fig.savefig("results/fluctuation_%s.pdf" % name)
+
+if sys.argv[1] == "earthAndJupiter":
+    for i in range(1, 4):
+        fig = plt.figure()
+        x1 = np.loadtxt("data%s.txt" % i, usecols=0)
+        y1 = np.loadtxt("data%s.txt" % i, usecols=1)
+
+        x2 = np.loadtxt("data%s.txt" % i, usecols=3)
+        y2 = np.loadtxt("data%s.txt" % i, usecols=4)
+
+        plt.plot(x1, y1)
+        plt.plot(x2, y2)
+        plt.xlabel("AU")
+        plt.ylabel("AU")
+        plt.legend(["Earth", "Jupiter"])
+        plt.grid(True)
+        fig.savefig("results/earthAndJupiter%s.pdf" % i)
+
 
 if sys.argv[1] == "escapeVel":
     mylegend = []

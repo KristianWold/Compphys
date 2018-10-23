@@ -22,31 +22,40 @@ vec newton(vec pos, vec vel)
 int main(int argc, char const *argv[])
 {
     Planet Earth(vec({1,0,0}), vec({0,2*M_PI,0}),3e-6);
-    Planet Jupiter(vec({5,0,0}), vec({0,3,0}),1);
+    Planet Jupiter(vec({5,0,0}), vec({0,3,0}), 0.001);
     vector<Planet> solarsystem = vector<Planet>{Earth, Jupiter};
-    Solver solver(solarsystem, scale);
 
-    double T = atof(argv[1]);
-    int N = atoi(argv[2]);
-    int sampleN = atoi(argv[3]);
+    double T = 10;
+    int N = 1000000;
+    int sampleN = 10;
 
-    solver.solve(2, newton, T, N, sampleN);
+    vector<double> mass{0.001, 0.01, 1};
 
-    system("python3 plot.py pos");
-    /*
     ofstream myfile;
     myfile.open("fluctuation.txt");
 
-    for(int n = 100; n<=1e8; n*=10)
+    for(int n = 100; n<=1e7; n*=10)
     {
         Solver solver(solarsystem, scale);
-        solver.solve(2, newton, T, n, n/10);
+        solver.solve(1, newton, 5, n, n/100, "data.txt");
         myfile << n << " " << solver.totalEnergyFluctuation() << "\n";
         cout << n << endl;
     }
     myfile.close();
 
-    system("python3 plot.py fluctuation");*/
+    system("python3 plot.py fluctuation EarthAndJupiter");
+    myfile.open("fluctuation.txt");
+
+    for(int i = 1; i<=3; i++)
+    {
+        solarsystem[1].M = mass[i-1];
+        Solver solver(solarsystem, scale);
+        solver.solve(2, newton, T, N, sampleN, "data" + to_string(i) + ".txt");
+    }
+
+    system("python3 plot.py earthAndJupiter");
+
+
 
     return 0;
 }
