@@ -29,10 +29,10 @@ inline vec einstein(vec pos, vec vel)
 
 int main(int argc, char const *argv[])
 {
-    vec pos_mercury = vec({-1.323E-01, -4.393E-01, -2.444E-02}); // [AU]
-    vec vel_mercury = vec({2.132E-02, 6.577E-03, -2.494E-03});
-    vel_mercury *= 365.25;
-    double M_mercury = 0.166E-6; // [solar mass]
+    vec pos_mercury = vec({4.508643080267578E-02, -4.492276414436671E-01, -4.152907939875187E-02}); // [AU]
+    vec vel_mercury = vec({2.234601746773343E-02, 4.225668557407336E-03, -1.705402587866491E-03});
+    vel_mercury *= 365.242199;
+    double M_mercury = 1.65956463e-7; // [solar mass]
 
     Planet Mercury(pos_mercury, vel_mercury, M_mercury);
     vector<Planet> solarsystem = vector<Planet>{Mercury};

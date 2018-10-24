@@ -63,7 +63,8 @@ int main(int argc, char const *argv[])
     {
         Solver solver(solarsystem, scale);
         solver.solve(1, newton, 5, n, n/100, "data.txt");
-        myfile << n << " " << solver.totalEnergyFluctuation() << "\n";
+        myfile << n << " " << solver.totalEnergyFluctuation() << " " <<
+        solver.angularFluctuation() << "\n";
         cout << n << endl;
     }
     myfile.close();
@@ -76,7 +77,8 @@ int main(int argc, char const *argv[])
     {
         Solver solver(solarsystem, scale);
         solver.solve(2, newton, 5, n, n/10, "data.txt");
-        myfile << n << " " << solver.totalEnergyFluctuation() << "\n";
+        myfile << n << " " << solver.totalEnergyFluctuation() << " " <<
+        solver.angularFluctuation() << "\n";
         cout << n << endl;
     }
     myfile.close();

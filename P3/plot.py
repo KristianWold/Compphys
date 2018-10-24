@@ -67,14 +67,22 @@ if sys.argv[1] == "fluctuation":
     name = sys.argv[2]
 
     n = np.loadtxt(file, usecols=0)
-    y = np.loadtxt(file, usecols=1)
+    y1 = np.loadtxt(file, usecols=1)
+    y2 = np.loadtxt(file, usecols=2)
 
     fig = plt.figure()
-    plt.plot(np.log10(n), np.log10(y))
+    plt.plot(np.log10(n), np.log10(y1))
     plt.xlabel("log10(N)")
     plt.ylabel("log10($\\epsilon$)")
     plt.grid(True)
     fig.savefig("results/fluctuation_%s.pdf" % name)
+
+    fig = plt.figure()
+    plt.plot(np.log10(n), np.log10(y2))
+    plt.xlabel("log10(N)")
+    plt.ylabel("log10($\\eta)")
+    plt.grid(True)
+    fig.savefig("results/fluctuation_angular_%s.pdf" % name)
 
 if sys.argv[1] == "earthAndJupiter":
     for i in range(1, 4):
