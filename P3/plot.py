@@ -80,7 +80,7 @@ if sys.argv[1] == "fluctuation":
     fig = plt.figure()
     plt.plot(np.log10(n), np.log10(y2))
     plt.xlabel("log10(N)")
-    plt.ylabel("log10($\\eta)")
+    plt.ylabel("log10($\\eta$)")
     plt.grid(True)
     fig.savefig("results/fluctuation_angular_%s.pdf" % name)
 
