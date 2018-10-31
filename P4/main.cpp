@@ -7,6 +7,13 @@
 using namespace std;
 using namespace arma;
 
+int *intvector(int row)
+{
+  int * A;
+  A = new int[row];
+  return (int *)A;
+}
+
 class Spins
 {
 private:
@@ -31,6 +38,21 @@ private:
             return x;
         }
     }
+    void init(int L, double T, double J, mt19937 &engine)
+    {
+        this->L = L;
+        this->T = T;
+        this->J = J;
+
+        rand_spin  = uniform_int_distribution<int>(0,1);
+        rand_coord = uniform_int_distribution<int>(0,L-1);
+
+        acceptAmp.insert( pair<double,double>(-8,exp(-1/T*(-8))) );
+        acceptAmp.insert( pair<double,double>(-4,exp(-1/T*(-4))) );
+        acceptAmp.insert( pair<double,double>(0,1));
+        acceptAmp.insert( pair<double,double>(4,exp(-1/T*(4))) );
+        acceptAmp.insert( pair<double,double>(8,exp(-1/T*(8))) );
+    }
 
 public:
     int L;               //Dimenstionality LxL
@@ -48,19 +70,7 @@ public:
     Spins(){};
     Spins(int L, double T, double J, mt19937 &engine)
     {
-        this->L = L;
-        this->T = T;
-        this->J = J;
-
-        rand_spin  = uniform_int_distribution<int>(0,1);
-        rand_coord = uniform_int_distribution<int>(0,L-1);
-
-        acceptAmp.insert( pair<double,double>(-8,exp(-1/T*(-8))) );
-        acceptAmp.insert( pair<double,double>(-4,exp(-1/T*(-4))) );
-        acceptAmp.insert( pair<double,double>(0,1));
-        acceptAmp.insert( pair<double,double>(4,exp(-1/T*(4))) );
-        acceptAmp.insert( pair<double,double>(8,exp(-1/T*(8))) );
-
+        init(L, T, J, engine);
         ensemble = zeros<Mat<int>>(L,L);
         for(int i=0; i<L; i++)
         {
@@ -69,6 +79,14 @@ public:
                 ensemble(i,j) = 2*rand_spin(engine) - 1;
             }
         }
+        calcEnergy();
+        calcMagnetization();
+    }
+
+    Spins(Mat<int> ensemble, int L, double T, double J, mt19937 &engine)
+    {
+        init(L, T, J, engine);
+        this->ensemble = ensemble;
         calcEnergy();
         calcMagnetization();
     }
@@ -129,8 +147,8 @@ private:
     double acceptAmp;
 
 public:
-    Col<int> energy;
-    Col<int> magnetization;
+    int* energy;
+    int* magnetization;
 
     uniform_real_distribution<float> rand_float;
 
@@ -142,34 +160,39 @@ public:
     }
     void solve(int cycles, mt19937 &engine)
     {
-        ofstream myfile;
-        myfile.open("data.txt");
+        energy = intvector(cycles);
+        magnetization = intvector(cycles);
 
-        energy = zeros<Col<int>>(cycles);
-        magnetization = zeros<Col<int>>(cycles);
-
-        energy(0) = spins.energy;
-        magnetization(0) = spins.magnetization;
-
-        myfile << energy(0) << endl;
+        energy[0]=spins.energy;
+        magnetization[0] = spins.magnetization;
 
         for(int i=1; i<cycles; i++)
         {
             //Sweeps over LxL spin matrix
-            energy(i) = energy(i-1);
+            energy[i] = energy[i-1];
+            magnetization[i] = magnetization[i-1];
             for(int j=0; j<spins.L*spins.L; j++)
             {
                 spins.tryflip(acceptAmp, engine);
                 if(rand_float(engine) < acceptAmp)
                 {
                     spins.flip();
-                    energy(i) += spins.deltaE;
-                    magnetization += spins.deltaM;
+                    energy[i] += spins.deltaE;
+                    magnetization[i] += spins.deltaM;
                 }
             }
-            myfile << energy(i) << "\n";
+            if(i%(cycles/100) == 0)
+            {
+                cout << i/(cycles/100) << '%' << endl;
+            }
         }
-        myfile.close();
+        cout << energy[0] << endl;
+        cout << energy[10] << endl;
+        cout << energy[5000] << endl;
+        ofstream file("data.dat", ofstream::binary);
+        file.write(reinterpret_cast<const char*>(energy), cycles*sizeof(int));
+        file.close();
+
     }
 };
 
@@ -181,10 +204,7 @@ int main(int argc, char const *argv[])
 
     mt19937 engine(1);
 
-    ofstream myfile;
-    myfile.open("magnetization.txt");
-
-    Spins crystal(L, T, 1, engine);
+    Spins crystal(ones<Mat<int>>(L,L), L, T, 1, engine);
     MonteCarlo MC(crystal);
     MC.solve(cycles, engine);
 
