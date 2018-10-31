@@ -2,7 +2,8 @@
 #include<armadillo>
 #include<fstream>
 #include<cmath>
-#include <map>
+#include<map>
+#include<random>
 using namespace std;
 using namespace arma;
 
@@ -39,18 +40,35 @@ public:
     double magnetization;//magnetization of the system
     double deltaE;       //change in energy when flipping single spin
     double deltaM;       //change in magnetization when flipping single spin
+
+    uniform_int_distribution<int> rand_spin;
+    uniform_int_distribution<int> rand_coord;
+
+
     Spins(){};
-    Spins(int L, double T, double J)
+    Spins(int L, double T, double J, mt19937 &engine)
     {
         this->L = L;
         this->T = T;
         this->J = J;
+
+        rand_spin  = uniform_int_distribution<int>(0,1);
+        rand_coord = uniform_int_distribution<int>(0,L-1);
+
         acceptAmp.insert( pair<double,double>(-8,exp(-1/T*(-8))) );
         acceptAmp.insert( pair<double,double>(-4,exp(-1/T*(-4))) );
         acceptAmp.insert( pair<double,double>(0,1));
         acceptAmp.insert( pair<double,double>(4,exp(-1/T*(4))) );
         acceptAmp.insert( pair<double,double>(8,exp(-1/T*(8))) );
-        ensemble = 2*randi<Mat<int>>(L,L,distr_param(0,1)) - ones<Mat<int>>(L,L);
+
+        ensemble = zeros<Mat<int>>(L,L);
+        for(int i=0; i<L; i++)
+        {
+            for(int j=0; j<L; j++)
+            {
+                ensemble(i,j) = 2*rand_spin(engine) - 1;
+            }
+        }
         calcEnergy();
         calcMagnetization();
     }
@@ -60,14 +78,14 @@ public:
         energy = 0;
         for(int i=0; i<L-1; i++)
         {
-            energy += -ensemble(L-1,i)*(ensemble(L-1,i+1) + ensemble(0,i));
-            energy += -ensemble(i,L-1)*(ensemble(i+1,L-1) + ensemble(i,0));
+            energy -= ensemble(L-1,i)*(ensemble(L-1,i+1) + ensemble(0,i));
+            energy -= ensemble(i,L-1)*(ensemble(i+1,L-1) + ensemble(i,0));
             for(int j=0; j<L-1; j++)
             {
-                energy += -ensemble(i,j)*(ensemble(i+1,j) + ensemble(i,j+1));
+                energy -= ensemble(i,j)*(ensemble(i+1,j) + ensemble(i,j+1));
             }
         }
-        energy += -ensemble(L-1,L-1)*(ensemble(L-1,0) + ensemble(0,L-1));
+        energy -= ensemble(L-1,L-1)*(ensemble(L-1,0) + ensemble(0,L-1));
     }
 
     void calcMagnetization()
@@ -87,10 +105,10 @@ public:
         cout << ensemble << endl;
     }
 
-    void tryflip(double &aA)
+    void tryflip(double &aA, mt19937 &engine)
     {
-        x = randi<int>(distr_param(0,L-1));
-        y = randi<int>(distr_param(0,L-1));
+        x = rand_coord(engine);
+        y = rand_coord(engine);
         deltaE = 2*ensemble(x,y)*(
                    ensemble(x,periodic(y+1)) + ensemble(x,periodic(y-1)) +
                    ensemble(periodic(x+1),y) + ensemble(periodic(x-1),y));
@@ -111,77 +129,64 @@ private:
     double acceptAmp;
 
 public:
-    double energy;
-    double av_energy;
-    double e2;
-    double magnetization;
-    double av_magnetization;
-    double Cv;
+    Col<int> energy;
+    Col<int> magnetization;
+
+    uniform_real_distribution<float> rand_float;
 
     MonteCarlo(Spins spins)
     {
         this->spins = spins;
+        rand_float = uniform_real_distribution<float>(0,1);
+
     }
-    void solve(int cycles)
+    void solve(int cycles, mt19937 &engine)
     {
         ofstream myfile;
         myfile.open("data.txt");
 
-        energy = spins.energy;
-        av_energy = energy;
-        e2 = energy*energy;
+        energy = zeros<Col<int>>(cycles);
+        magnetization = zeros<Col<int>>(cycles);
 
-        magnetization = spins.magnetization;
-        av_magnetization = magnetization;
+        energy(0) = spins.energy;
+        magnetization(0) = spins.magnetization;
 
-        myfile << energy << endl;
+        myfile << energy(0) << endl;
 
         for(int i=1; i<cycles; i++)
         {
             //Sweeps over LxL spin matrix
+            energy(i) = energy(i-1);
             for(int j=0; j<spins.L*spins.L; j++)
             {
-                spins.tryflip(acceptAmp);
-                if(randu<double>() < acceptAmp)
+                spins.tryflip(acceptAmp, engine);
+                if(rand_float(engine) < acceptAmp)
                 {
                     spins.flip();
-                    energy += spins.deltaE;
+                    energy(i) += spins.deltaE;
                     magnetization += spins.deltaM;
                 }
             }
-            myfile << energy << "\n";
-
-            av_energy += energy;
-            e2 += energy*energy;
-
-            av_magnetization += magnetization;
+            myfile << energy(i) << "\n";
         }
         myfile.close();
-        av_energy /= cycles;
-        av_magnetization = abs(av_magnetization)/(cycles*spins.L*spins.L);
-        e2 /= cycles;
-        Cv = e2 - av_energy*av_energy;
     }
 };
 
 int main(int argc, char const *argv[])
 {
-
     int cycles = atoi(argv[1]);
     int L = atoi(argv[2]);
     double T = atof(argv[3]);
-    //double T;
+
+    mt19937 engine(1);
 
     ofstream myfile;
     myfile.open("magnetization.txt");
-    arma_rng::set_seed_random();
 
-    Spins crystal(L,T,1);
+    Spins crystal(L, T, 1, engine);
     MonteCarlo MC(crystal);
-    MC.solve(cycles);
-    cout << MC.av_energy << endl;
-    cout << MC.av_magnetization << endl;
-    cout << MC.Cv << endl;
+    MC.solve(cycles, engine);
 
 /*    for(int i = 0; i<=20; i++)
     {
