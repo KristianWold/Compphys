@@ -9,6 +9,7 @@
 *.txt
 *.x
 *.pdf
+*.dat
 
 # Compiled Object files
 *.slo
