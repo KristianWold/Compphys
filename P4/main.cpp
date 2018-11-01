@@ -186,11 +186,9 @@ public:
                 cout << i/(cycles/100) << '%' << endl;
             }
         }
-        cout << energy[0] << endl;
-        cout << energy[10] << endl;
-        cout << energy[5000] << endl;
         ofstream file("data.dat", ofstream::binary);
         file.write(reinterpret_cast<const char*>(energy), cycles*sizeof(int));
+        file.write(reinterpret_cast<const char*>(magnetization), cycles*sizeof(int));
         file.close();
 
     }
@@ -204,7 +202,7 @@ int main(int argc, char const *argv[])
 
     mt19937 engine(1);
 
-    Spins crystal(ones<Mat<int>>(L,L), L, T, 1, engine);
+    Spins crystal(L, T, 1, engine);
     MonteCarlo MC(crystal);
     MC.solve(cycles, engine);
 
