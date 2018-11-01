@@ -1,27 +1,50 @@
 #include <iostream>
 #include <map>
 #include <armadillo>
+#include<fstream>
 #include <random>
+#include"/usr/include/mpi/mpi.h"
 using namespace std;
 using namespace arma;
 
-class Ost
+int *intvector(int row)
 {
-public:
-    int L;
-    int test;
-    uniform_int_distribution<int> rand_coord(0,1);
-    Ost(int L_, mt19937 &engine)
-    {
-        //rand_coord = uniform_int_distribution<int>(0,L_-1);
-        test = rand_coord(engine);
-    }
-};
+  int * A;
+  A = new int[row];
+  return (int *)A;
+}
 
-int main(int argc, char const *argv[])
+int main(int nargs, char* args[])
 {
-    mt19937 engine(1);
-    Ost parmesan(10, engine);
+    int* local;
+
+    int numprocs, my_rank;
+    MPI_Init(&nargs, &args);
+    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+
+    for(int i=1; i<10; i++)
+    {
+        
+    }
+
+    if(my_rank == 0)
+    {
+        MPI_Status status;
+        cout << local << endl;
+        for(int j=1; j<numprocs; j++)
+        {
+
+            MPI_Recv(&local, 1, MPI_INT, MPI_ANY_SOURCE, 500,
+                     MPI_COMM_WORLD, &status);
+            cout << local << endl;
+        }
+    }
+    else
+    {
+        MPI_Send(&local, 1, MPI_INT, 0, 500, MPI_COMM_WORLD);
+    }
+    MPI_Finalize();
 
     return 0;
 }

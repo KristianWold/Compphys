@@ -4,6 +4,7 @@
 #include<cmath>
 #include<map>
 #include<random>
+#include"/usr/include/mpi/mpi.h"
 using namespace std;
 using namespace arma;
 
@@ -147,8 +148,7 @@ private:
     double acceptAmp;
 
 public:
-    int* energy;
-    int* magnetization;
+    int* energyAndMag;
 
     uniform_real_distribution<float> rand_float;
 
@@ -160,65 +160,70 @@ public:
     }
     void solve(int cycles, mt19937 &engine)
     {
-        energy = intvector(cycles);
-        magnetization = intvector(cycles);
+        energyAndMag = intvector(2*cycles);
 
-        energy[0]=spins.energy;
-        magnetization[0] = spins.magnetization;
+        energyAndMag[0]=spins.energy;
+        energyAndMag[cycles] = spins.magnetization;
 
         for(int i=1; i<cycles; i++)
         {
             //Sweeps over LxL spin matrix
-            energy[i] = energy[i-1];
-            magnetization[i] = magnetization[i-1];
+            energyAndMag[i] = energyAndMag[i-1];
+            energyAndMag[i+cycles] = energyAndMag[i+cycles-1];
             for(int j=0; j<spins.L*spins.L; j++)
             {
                 spins.tryflip(acceptAmp, engine);
                 if(rand_float(engine) < acceptAmp)
                 {
                     spins.flip();
-                    energy[i] += spins.deltaE;
-                    magnetization[i] += spins.deltaM;
+                    energyAndMag[i] += spins.deltaE;
+                    energyAndMag[i+cycles] += spins.deltaM;
                 }
             }
-            if(i%(cycles/100) == 0)
-            {
-                cout << i/(cycles/100) << '%' << endl;
-            }
         }
-        ofstream file("data.dat", ofstream::binary);
-        file.write(reinterpret_cast<const char*>(energy), cycles*sizeof(int));
-        file.write(reinterpret_cast<const char*>(magnetization), cycles*sizeof(int));
-        file.close();
-
+        cout << "Done!" << endl;
     }
 };
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
     int cycles = atoi(argv[1]);
     int L = atoi(argv[2]);
     double T = atof(argv[3]);
+    int* local;
 
-    mt19937 engine(1);
+    int numprocs, my_rank;
+    MPI_Init(&argc, &argv);
+    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
+    mt19937 engine(my_rank+10);
     Spins crystal(L, T, 1, engine);
     MonteCarlo MC(crystal);
     MC.solve(cycles, engine);
+    local = MC.energyAndMag;
 
-/*    for(int i = 0; i<=20; i++)
+    if(my_rank == 0)
     {
-        T = 2 + 0.3/20*i;
-        Spins crystal(L,T,1);
-        MonteCarlo MC(crystal);
+        MPI_Status status;
+        ofstream file("results/data.dat", ofstream::binary);
+        file.write(reinterpret_cast<const char*>(local),
+                   2*cycles*sizeof(int));
 
-        MC.solve(cycles);
-        myfile << T << " " << MC.av_magnetization << "\n";
-        cout << i << "/20" << endl;
+        for(int i=1; i<numprocs; i++)
+        {
+            MPI_Recv(local, 2*cycles, MPI_INT, MPI_ANY_SOURCE, 500,
+                     MPI_COMM_WORLD, &status);
+            file.write(reinterpret_cast<const char*>(local),
+                       2*cycles*sizeof(int));
+        }
+        file.close();
     }
-    myfile.close();
-*/
-    //system("python plot.py");
+    else
+    {
+        MPI_Send(local, 2*cycles, MPI_INT, 0, 500, MPI_COMM_WORLD);
+    }
+    MPI_Finalize();
 
     return 0;
 }

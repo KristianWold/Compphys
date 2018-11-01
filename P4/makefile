@@ -1,5 +1,5 @@
 CC = gcc
-CXX = g++
+CXX = mpic++
 CPPflags = -g -Wall -std=c++11 -O3
 
 UNAME := $(shell uname)
@@ -18,6 +18,12 @@ main.x: main.o
 	${CXX} ${CPPflags} -o $@ $^ ${INCL} ${LIB}
 
 main.o: main.cpp
+	${CXX} ${CPPflags} -c $^ ${INCL} ${LIB}
+
+test.x: test.o
+	${CXX} ${CPPflags} -o $@ $^ ${INCL} ${LIB}
+
+test.o: test.cpp
 	${CXX} ${CPPflags} -c $^ ${INCL} ${LIB}
 
 clean:
