@@ -225,5 +225,16 @@ int main(int argc, char *argv[])
     }
     MPI_Finalize();
 
+    if(my_rank == 0)
+    {
+        ofstream meta;
+        meta.open("results/meta.txt");
+        meta << cycles << endl;
+        meta << numprocs << endl;
+        meta << L << endl;
+        meta << T << endl;
+        meta.close();
+        system("python3 analyze.py");
+    }
     return 0;
 }
