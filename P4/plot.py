@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+"""
 meta = "results/meta.txt"
 metainfo = np.loadtxt(meta, usecols=0)
 
@@ -17,5 +17,11 @@ for i in range(cores):
     end = int(2 * (i * cycles) + cycles)
     plt.figure()
     plt.plot(array[start: end])
-
+"""
+file = "results/phase.txt"
+T = np.loadtxt(file, usecols=0)
+M = np.loadtxt(file, usecols=1)
+plt.plot(T, M)
+plt.xlabel("T")
+plt.ylabel("M")
 plt.show()

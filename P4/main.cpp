@@ -164,7 +164,7 @@ public:
     {
         energyAndMag = intvector(2*cycles);
 
-        energyAndMag[0] = E =spins.energy;
+        energyAndMag[0] = E = spins.energy;
         energyAndMag[cycles] = M = abs(spins.magnetization);
 
         for(int i=1; i<cycles; i++)
@@ -183,7 +183,6 @@ public:
             energyAndMag[i] = E;
             energyAndMag[i+cycles] = abs(M);
         }
-        cout << "Done!" << endl;
     }
 };
 
@@ -229,6 +228,7 @@ int main(int argc, char *argv[])
 
     if(my_rank == 0)
     {
+        cout << "Done!" << endl;
         ofstream meta;
         meta.open("results/meta.txt");
         meta << cycles << endl;
