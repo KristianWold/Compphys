@@ -149,6 +149,8 @@ private:
 
 public:
     int* energyAndMag;
+    int E;
+    int M;
 
     uniform_real_distribution<float> rand_float;
 
@@ -162,24 +164,24 @@ public:
     {
         energyAndMag = intvector(2*cycles);
 
-        energyAndMag[0]=spins.energy;
-        energyAndMag[cycles] = spins.magnetization;
+        energyAndMag[0] = E =spins.energy;
+        energyAndMag[cycles] = M = abs(spins.magnetization);
 
         for(int i=1; i<cycles; i++)
         {
             //Sweeps over LxL spin matrix
-            energyAndMag[i] = energyAndMag[i-1];
-            energyAndMag[i+cycles] = energyAndMag[i+cycles-1];
             for(int j=0; j<spins.L*spins.L; j++)
             {
                 spins.tryflip(acceptAmp, engine);
                 if(rand_float(engine) < acceptAmp)
                 {
                     spins.flip();
-                    energyAndMag[i] += spins.deltaE;
-                    energyAndMag[i+cycles] += spins.deltaM;
+                    E += spins.deltaE;
+                    M += spins.deltaM;
                 }
             }
+            energyAndMag[i] = E;
+            energyAndMag[i+cycles] = abs(M);
         }
         cout << "Done!" << endl;
     }
@@ -198,7 +200,7 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
     mt19937 engine(my_rank+10);
-    Spins crystal(L, T, 1, engine);
+    Spins crystal(ones<Mat<int>>(L,L), L, T, 1, engine);
     MonteCarlo MC(crystal);
     MC.solve(cycles, engine);
     local = MC.energyAndMag;
