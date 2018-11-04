@@ -21,7 +21,7 @@ for i in range(cores):
 file = "results/phase.txt"
 T = np.loadtxt(file, usecols=0)
 M = np.loadtxt(file, usecols=1)
-plt.plot(T, M)
+plt.plot(T, M,"o")
 plt.xlabel("T")
 plt.ylabel("M")
 plt.show()
