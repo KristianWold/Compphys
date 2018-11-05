@@ -199,7 +199,8 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
     mt19937 engine(my_rank+10);
-    Spins crystal(ones<Mat<int>>(L,L), L, T, 1, engine);
+    //Spins crystal(ones<Mat<int>>(L,L), L, T, 1, engine);
+    Spins crystal(L, T, 1, engine);
     MonteCarlo MC(crystal);
     MC.solve(cycles, engine);
     local = MC.energyAndMag;

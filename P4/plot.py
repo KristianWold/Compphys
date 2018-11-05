@@ -12,16 +12,26 @@ T = float(metainfo[3])
 file = "results/data.dat"
 array = np.fromfile(file, dtype="int32", count=-1)
 
-for i in range(cores):
-    start = int(2 * (i * cycles))
-    end = int(2 * (i * cycles) + cycles)
-    plt.figure()
-    plt.plot(array[start: end])
+#for i in range(cores):
+#    start = int(2 * (i * cycles))
+#    end = int(2 * (i * cycles) + cycles)
+#    plt.figure()
+#    plt.plot(array[start: end])
+
+plt.plot(array[0: cycles])
+plt.show()
+
+
+plt.plot(array[cycles: 2*cycles])
+plt.show()
 """
+
 file = "results/phase.txt"
 T = np.loadtxt(file, usecols=0)
 M = np.loadtxt(file, usecols=1)
+
 plt.plot(T, M,"o")
+
 plt.xlabel("T")
 plt.ylabel("M")
 plt.show()
