@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
     mt19937 engine(my_rank+10);
-    //Spins crystal(ones<Mat<int>>(L,L), L, T, 1, engine);
-    Spins crystal(L, T, 1, engine);
+    Spins crystal(ones<Mat<int>>(L,L), L, T, 1, engine);
+    //Spins crystal(L, T, 1, engine);
     MonteCarlo MC(crystal);
     MC.solve(cycles, engine);
     local = MC.energyAndMag;
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
         ofstream file("results/data.dat", ofstream::binary);
         file.write(reinterpret_cast<const char*>(local),
                    2*cycles*sizeof(int));
-
+        cout << "Numbers of accepted states: " << MC.accepted << endl;
         for(int i=1; i<numprocs; i++)
         {
             MPI_Recv(local, 2*cycles, MPI_INT, MPI_ANY_SOURCE, 500,

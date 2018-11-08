@@ -20,6 +20,7 @@ public:
     int* energyAndMag;
     int E;
     int M;
+    int accepted;
 
     uniform_real_distribution<float> rand_float;
 

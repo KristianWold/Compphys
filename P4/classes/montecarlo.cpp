@@ -22,6 +22,7 @@ void MonteCarlo::solve(int cycles, mt19937 &engine)
     energyAndMag[0] = E = spins.energy;
     energyAndMag[cycles] = M = abs(spins.magnetization);
 
+    accepted = 0;
     for(int i=1; i<cycles; i++)
     {
         //Sweeps over LxL spin matrix
@@ -30,6 +31,7 @@ void MonteCarlo::solve(int cycles, mt19937 &engine)
             spins.tryflip(acceptAmp, engine);
             if(rand_float(engine) < acceptAmp)
             {
+                accepted++;
                 spins.flip();
                 E += spins.deltaE;
                 M += spins.deltaM;
