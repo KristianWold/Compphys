@@ -14,11 +14,17 @@ INCL :=
 LIB := -DARMA_DONT_USE_WRAPPER -lblas -llapack
 endif
 
-main.x: main.o
+main.x: main.o spins.o montecarlo.o
 	${CXX} ${CPPflags} -o $@ $^ ${INCL} ${LIB}
 
 main.o: main.cpp
 	${CXX} ${CPPflags} -c $^ ${INCL} ${LIB}
+
+spins.o: classes/spins.cpp
+	g++ ${CPPflags} -c $^ ${INCL} ${LIB}
+
+montecarlo.o: classes/montecarlo.cpp
+	g++ ${CPPflags} -c $^ ${INCL} ${LIB}
 
 test.x: test.o
 	${CXX} ${CPPflags} -o $@ $^ ${INCL} ${LIB}
