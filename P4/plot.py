@@ -38,6 +38,8 @@ for i in range(cores):
 #    plt.legend("Energy of system")
     fig.savefig("plots/magnetization%s_L=%s_T=%s.pdf" % (i, L, T))
 
+# -----------------------------------------------------------------------------
+# probability distribution
 state = np.loadtxt("results/distribution.txt", usecols=0)
 prob = np.loadtxt("results/distribution.txt", usecols=1)
 
@@ -47,3 +49,19 @@ plt.xlabel("energy")
 plt.ylabel("probability")
 plt.legend(["distribution, L=%s, T=%s" % (L, T)])
 fig.savefig("plots/distribution_L=%s_T=%s.pdf" % (L, T))
+# -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# phase transtion
+"""
+t = np.loadtxt("results/phase.txt", usecols=0)
+mean_M = np.loadtxt("results/phase.txt", usecols=1)
+
+fig = plt.figure()
+plt.plot(t, mean_M)
+plt.xlabel("temperature")
+plt.ylabel("probability")
+plt.legend(["distribution, L=%s, T=%s" % (L, T)])
+fig.savefig("plots/distribution_L=%s_T=%s.pdf" % (L, T))
+"""
+# -----------------------------------------------------------------------------
