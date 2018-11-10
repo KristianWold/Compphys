@@ -21,6 +21,8 @@ for i in range(cores):
     E[i] = array[start:end]
     M[i] = array[(start + cycles):(end + cycles)]
 
+
+
 for i in range(cores):
     fig = plt.figure()
     plt.plot(E[i] / L**2)

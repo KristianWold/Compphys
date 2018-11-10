@@ -1,14 +1,23 @@
 import os
+import numpy as np
+import matplotlib.pyplot as plt
 
-T_start = 2.1
-T_end = 2.5
-T_step = 0.05
+T_start = 2.24
+T_end = 2.3
+T_step = 0.01
 N = int((T_end - T_start) / T_step)
-file = open("results/phase.txt", "w")
-file.close()
 
-for i in range(N):
-    os.system("mpirun -np 8 ./main.x 10000 100 %s" % (T_start + i * T_step))
+T = []
+X = []
+
+for i in range(N+1):
+    os.system("mpirun -np 8 ./simulation.x 30000 140 %s" % (T_start + i * T_step))
+    expect = np.loadtxt("results/expection.txt", usecols=0)
+    T.append(expect[0])
+    X.append(expect[3])
     print("go!")
 
-os.system("python plot.py")
+np.savetxt("results/phase.txt", np.transpose((T, X)))
+
+plt.plot(T,X)
+plt.show()
