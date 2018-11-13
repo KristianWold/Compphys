@@ -27,8 +27,8 @@ int main(int argc, char *argv[])
     cycles = totalCycles/numprocs + cutoff;
 
     mt19937 engine(my_rank+10);
-    Spins crystal(ones<Mat<int>>(L,L), L, T, 1, engine);
-    //Spins crystal(L, T, 1, engine);
+    Spins crystal(ones<Mat<int>>(L,L), L, T, 1, engine);    //Ordered lattice
+    //Spins crystal(L, T, 1, engine);                       //Random lattice
     MonteCarlo MC(crystal);
 
     MC.solve(cycles, engine);

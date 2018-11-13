@@ -1,13 +1,13 @@
 \section{Theory}\label{sec:Theory}
 %----------------------------------------------------------------
-\subsection{Partition function and expectation values}
+\subsection{Partition function and expectation values}\label{PartAndExp}
 %----------------------------------------------------------------
 In our model, we assume that our system of spins is in contact with a reservoir of temperature T, meaning it is free to exchange energy, but not particles or volume. The reservoir is assumed so big that it does not lose a noticeable amount of energy, meaning at equilibrium our system will be the same temperature as the reservoir. Thus our system can be described using the canonical ensemble. 
 
 For a temperature T, the chance of finding our system in a state $i$ with a related energy $E_i$ is given by
-\begin{equation*}
+\begin{equation}\label{eq:probability}
     P_i = \frac{e^{-\beta E_i}}{Z}
-\end{equation*}
+\end{equation}
 where $\beta = \frac{1}{k_BT}$ and $Z$ is the partition function, which is the sum of all states' Boltzmann factor
 
 \begin{equation}\label{eq:partition}
@@ -80,7 +80,28 @@ Likewise, you can derive the susceptibility by the variance of the magnetization
     \chi = \frac{1}{T}(\langle M^2 \rangle - \langle M \rangle^2)
 \end{equation*}
 
+%----------------------------------------------------------------
+\subsection{Metropolis Algorithm and Ergodicity}\label{metropolis}
+%----------------------------------------------------------------
+When studying systems that can assume different states by certain probabilities, the Metropolis Algorithm is a powerful tool. To find the most likely configuration of spins for a certain temperature, that is, equilibrium, we would like to let the system evolve in a random fashion, flipping spins until we achieve the most likely state. This is reminiscent of a random walker, with some differences. Firstly, we are not walking randomly through real space, but rather through the space of possible states the system can assume. Secondly, the walk is not uniformly random, but biased in a way that favors states that are more likely to arise according to the thermodynamical laws, viz. (\ref{eq:probability}). The reason we cannot use (\ref{eq:probability}) directly is because the partition function becomes unfeasible to compute for moderatly large systems. Instead, the metropolis algorithm relies on the ratio of two probabilities for two different stats. Given we are in a state 
+$i$, we flip a spin at random to attain state $j$. The ratio reads
 
+\begin{equation}
+    \frac{P_j}{P_i} = \frac{\frac{e^{-\beta E_j}}{Z}}{\frac{e^{-\beta E_i}}{Z}} = 
+    e^{-\beta (E_j- E_i)} = e^{-\beta\Delta E} 
+\end{equation}\label{eq:acceptAmp}
 
+Note how the partition functions cancel, to our great relief. The metropolis algorithm for Ising model works as follows: 
+\begin{itemize}
+  \item Given a starting state $i$, flip one spin at random to create the new state $j$. 
+  \item If $\Delta E = E_j - E_i <= 0$, accept the new state.
+  \item Otherwise, accept the new state only if $e^{-\beta\Delta E}>r$, where r is some uniformly distributed random number between $0$ and $1$.
+\end{itemize}
 
+This formulation conserves two important properties of the system: It creates the well known tendency for systems to strive for the lowest energy state in the sense that we allways accept a new state if the energy is lower. However, in real thermodynamics systems, we don't the system assuming the lowest possible energy and stay there: It fluctuates. We must allow it to sometimes go up in energy as well. This concept is called ergodicity, which means that the system is able to assume all possible states given enough time, allthough some of the states are extremly unlikely. Had our system not been able to make fluctuations from time to time, it would result in faulty physics, because it would cause artificially low variance in e.i. the energy.
 
+%----------------------------------------------------------------
+\subsection{Monte Carlo Algorithm}
+%----------------------------------------------------------------
+Using the Metropolis algorithm as in section \ref{metropolis}, we have a way to evolve our spin-matrix given a initial state. For a $N\cross N$ matrix, we apply Metropolis $N^2$ times. This is known as sweeping over the matrix, allthough we really choose a random spin each time. One sweep of the matrix makes one Monte-Carlo cycle. For each cycle, we sample the energy and magnetization and writes them to file. From these values we compute all the our expectation values as described in section \ref{PartAndExp}. However, some care should be taken, as we must wait until the system has reached equilibrium before 
+calculating expectation values. An easy way to identify when equilibrium is reach is simply by plotting the measures energy as a function of cycles and see when it flattens out. As we will see later, it turns out that the time it takes to equilibriate increases with temperature and number of spins. The largest times we observed were around 200 cycles. Therefore, for good measure, a truncation of the 500 first cycles for all simulations have been used in this project to ensure good expectation values.

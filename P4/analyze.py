@@ -49,10 +49,10 @@ M2 /= length
 Cv = 1 / T**2 * (E2 - E_mean**2)
 X = 1 / T * (M2 - M_mean**2)
 
-E_mean /= L*L   #Per spin
-M_mean /= L*L
-Cv /= L*L
-X /= L*L
+E_mean /= L * L  # Per spin
+M_mean /= L * L
+Cv /= L * L
+X /= L * L
 
 print("T = %s" % T)
 print("Energy = %s" % E_mean)
@@ -64,7 +64,7 @@ np.savetxt("results/expection.txt", (T, E_mean, M_mean, Cv, X))
 
 P = {}
 # Goes though the different enegy states that occured and counts how often they
-# occured
+# occured.
 for i in range(cores):
     for j in range(cycles):
         energy = E[i, j]
@@ -75,7 +75,7 @@ for i in range(cores):
 
 # Normalizes the probability
 for p in P:
-    P[p] /= cycles * cores
+    P[p] /= length * cores
 
 state = list(P.values())  # state of a specific energy
 prob = list(P.keys())     # probaility of energy to occur
