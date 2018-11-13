@@ -1,0 +1,86 @@
+\section{Theory}\label{sec:Theory}
+%----------------------------------------------------------------
+\subsection{Partition function and expectation values}
+%----------------------------------------------------------------
+In our model, we assume that our system of spins is in contact with a reservoir of temperature T, meaning it is free to exchange energy, but not particles or volume. The reservoir is assumed so big that it does not lose a noticeable amount of energy, meaning at equilibrium our system will be the same temperature as the reservoir. Thus our system can be described using the canonical ensemble. 
+
+For a temperature T, the chance of finding our system in a state $i$ with a related energy $E_i$ is given by
+\begin{equation*}
+    P_i = \frac{e^{-\beta E_i}}{Z}
+\end{equation*}
+where $\beta = \frac{1}{k_BT}$ and $Z$ is the partition function, which is the sum of all states' Boltzmann factor
+
+\begin{equation}\label{eq:partition}
+    Z = \sum_i e^{-\beta E_i}
+\end{equation}
+The partition function normalizes the probability, so $\sum_i P_i = \frac{Z}{Z} = 1$.
+
+Using the probability, we can work out any expectation value $\langle O \rangle$
+
+\begin{equation}\label{eq:expectation}
+    \langle O \rangle = \sum_i P_i O_i = \frac{1}{Z}\sum_i O_i e^{-\beta E_i}
+\end{equation}
+
+For the $2\times2$ case for our spin system, we can easily work out the energy and magnetization of all the accessible states, and thus the partition function. Using (energy of system) with periodic boundaries, and $J/k_B=1$, we get the following result: 
+
+\begin{table}[H]\label{tb:tabulated states}
+\begin{tabular}{|l|l|l|l|}
+\hline
+ Spins up&  Degeneracy&  E&  M\\ \hline
+ 4&  1&  -8&  4\\ \hline
+ 3&  4&  0&  2\\ \hline
+ 2&  4&  0&  0\\ \hline
+ 2&  2&  8&  0\\ \hline
+ 1&  4&  0&  -2\\ \hline
+ 0&  1&  -8& -4\\ \hline
+\end{tabular}
+\end{table}
+
+Using (\ref{eq:partition}), we can calculate the partition function 
+\begin{equation}\label{eq:partition2x2}
+    Z = \sum_i e^{-E_i/T} = 2e^{-(-8)/T} + 2e^{-(8)/T} + 12e^{-(0)/T} = 4\cosh(8/T) + 12
+\end{equation}
+using $\cosh(x) = \frac{e^{x} + e^{-x}}{2}$.
+
+Using (\ref{eq:expectation}), rewriting the equation for $O = E$, the expectation value of the energy and mean magnetization is
+\begin{equation}\label{eq:expectE}
+    \langle E \rangle = \frac{1}{Z}\sum_i E_i e^{-\beta E_i} = -\frac{\partial \ln(Z)}{\partial \beta}
+    = \frac{-32\sinh(8/T)}{4\cosh(8/T) + 12}
+\end{equation}
+
+\begin{equation}\label{eq:expectM}
+    \langle |M| \rangle = \frac{2\cdot4e^{8/T} + 4\cdot2e^{-0/T} + 4\cdot2e^{-0/T}}
+    {4\cosh(8/T) + 12}
+\end{equation}
+\begin{equation*}
+    =\frac{8e^{8/T} + 16}{4\cosh(8/T) + 12}
+\end{equation*}
+
+Using $Cv = \pdv{\langle E \rangle}{T}$, we get
+\begin{equation}\label{eq:heatcap}
+    Cv = -\frac{1}{T^2}\frac{-256\cosh(8/T)(4\cosh(8/T)+12)+1024\sinh^2(8/T)}{(4\cosh(8/T) + 12)^2}
+\end{equation}
+\begin{equation*}
+    = \frac{1}{T^2}\frac{64(3\cosh(8/T) + 1)}{(\cosh(8/T) + 3)^2}
+\end{equation*}
+
+Too get a suitable expression for evaluating the heat capacity numerically later, we express it in terms of the variance of the energy
+
+\begin{equation*}
+    Cv = \pdv{\langle E \rangle}{T} = \pdv{\beta}{T}\pdv{\langle E \rangle}{\beta}
+    = \frac{1}{T^2}\pdv{^2\ln(Z)}{\beta^2}
+\end{equation*}
+\begin{equation*}
+    \frac{1}{T^2}\pdv{}{\beta}[\frac{1}{Z}\pdv{Z}{\beta}] = 
+    \frac{1}{T^2}[\frac{1}{Z}\pdv{^2Z}{\beta^2} - (\frac{1}{Z}\pdv{Z}{\beta})^2]
+    = \frac{1}{T^2}[\langle E^2 \rangle - \langle E \rangle^2]
+\end{equation*}
+Likewise, you can derive the susceptibility by the variance of the magnetization
+\begin{equation*}
+    \chi = \frac{1}{T}(\langle M^2 \rangle - \langle M \rangle^2)
+\end{equation*}
+
+
+
+
+

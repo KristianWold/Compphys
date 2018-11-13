@@ -23,7 +23,6 @@ for i in range(cores):
     M[i] = array[(start + cycles):(end + cycles)]
 
 
-
 fig = plt.figure()
 plt.plot(E[i] / L**2)
 plt.xlabel("Cycle")
@@ -54,58 +53,48 @@ plt.legend(["distribution, L=%s, T=%s" % (L, T)])
 fig.savefig("plots/distribution_L=%s_T=%s.pdf" % (L, T))
 # -----------------------------------------------------------------------------
 
-
-# phase transtion
+# numerical vs. analytical
 # -----------------------------------------------------------------------------
-L = [40, 80, 100, 140]
-t = np.loadtxt("results/evolution_L=40.txt", usecols=0)
+file = "results/evolution_L=2.txt"
+t = np.loadtxt(file, usecols=0)
+T = np.linspace(t[0], t[-1], 1000)
+E_anal = -(8 * np.sinh(8 / T)) / (np.cosh(8 / T) + 3) / 4
+M_anal = (2 * np.exp(8 / T) + 4) / (np.cosh(8 / T) + 3) / 4
+Cv_anal = 1 / T**2 * 64 * (3 * np.cosh(8 / T) + 1) / \
+    (np.cosh(8 / T) + 3)**2 / 4
+X_anal = 1 / T * ((8 * np.exp(8 / T) + 8) /
+                  (np.cosh(8 / T) + 3) - (4 * M_anal)**2) / 4
 
-E = []; M = []; Cv = []; X = []
 
-for l in L:
-    file = "results/evolution_L=%s.txt"%(l)
-    E.append(np.loadtxt(file, usecols=1))
-    M.append(np.loadtxt(file, usecols=2))
-    Cv.append(np.loadtxt(file, usecols=3))
-    X.append(np.loadtxt(file, usecols=4))
+E = np.loadtxt(file, usecols=1)
+M = np.loadtxt(file, usecols=2)
+Cv = np.loadtxt(file, usecols=3)
+X = np.loadtxt(file, usecols=4)
 
 fig = plt.figure()
-plt.plot(t, E[0])
-plt.plot(t, E[1])
-plt.plot(t, E[2])
-plt.plot(t, E[3])
+plt.subplot(2, 2, 1)
 plt.xlabel("T")
 plt.ylabel("<E>")
-plt.legend(["L=40","L=80","L=100","L=140"])
-fig.savefig("plots/evolution_energy.pdf")
+plt.plot(t, E, linewidth=0.5)
+plt.plot(T, E_anal, linewidth=0.5)
 
-fig = plt.figure()
-plt.plot(t, M[0])
-plt.plot(t, M[1])
-plt.plot(t, M[2])
-plt.plot(t, M[3])
-plt.xlabel("temperature")
+plt.subplot(2, 2, 2)
+plt.xlabel("T")
 plt.ylabel("<|M|>")
-plt.legend(["L=40","L=80","L=100","L=140"])
-fig.savefig("plots/evolution_magnetization.pdf")
+plt.plot(t, M, linewidth=0.5)
+plt.plot(T, M_anal, linewidth=0.5)
 
-fig = plt.figure()
-plt.plot(t, Cv[0])
-plt.plot(t, Cv[1])
-plt.plot(t, Cv[2])
-plt.plot(t, Cv[3])
-plt.xlabel("Temperature")
-plt.ylabel("Cv")
-plt.legend(["L=40","L=80","L=100","L=140"])
-fig.savefig("plots/evolution_cv.pdf")
+plt.subplot(2, 2, 3)
+plt.xlabel("T")
+plt.ylabel("<Cv>")
+plt.plot(t, Cv, linewidth=0.5)
+plt.plot(T, Cv_anal, linewidth=0.5)
 
-fig = plt.figure()
-plt.plot(t, X[0])
-plt.plot(t, X[1])
-plt.plot(t, X[2])
-plt.plot(t, X[3])
-plt.xlabel("temperature")
-plt.ylabel("Susceptibility")
-plt.legend(["L=40","L=80","L=100","L=140"])
-fig.savefig("plots/evolution_susceptibility.pdf")
+plt.subplot(2, 2, 4)
+plt.xlabel("T")
+plt.ylabel("X")
+plt.plot(t, X, linewidth=0.5)
+plt.plot(T, X_anal, linewidth=0.5)
+
+fig.savefig("plots/numericalVsAnalytical.pdf")
 # -----------------------------------------------------------------------------
