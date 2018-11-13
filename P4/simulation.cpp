@@ -12,9 +12,11 @@ using namespace arma;
 
 int main(int argc, char *argv[])
 {
-    int cycles = atoi(argv[1]);
-    int L = atoi(argv[2]);
-    double T = atof(argv[3]);
+    int totalCycles = atoi(argv[1]);
+    int cutoff = atoi(argv[2]);
+    int L = atoi(argv[3]);
+    double T = atof(argv[4]);
+    int cycles;
     int* local;
 
     int numprocs, my_rank;
@@ -22,10 +24,13 @@ int main(int argc, char *argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
+    cycles = totalCycles/numprocs + cutoff;
+
     mt19937 engine(my_rank+10);
     Spins crystal(ones<Mat<int>>(L,L), L, T, 1, engine);
     //Spins crystal(L, T, 1, engine);
     MonteCarlo MC(crystal);
+
     MC.solve(cycles, engine);
     local = MC.energyAndMag;
 
@@ -57,9 +62,11 @@ int main(int argc, char *argv[])
         ofstream meta;
         meta.open("results/meta.txt");
         meta << cycles << endl;
+        meta << cutoff << endl;
         meta << numprocs << endl;
         meta << L << endl;
         meta << T << endl;
+        meta << MC.accepted << endl;
         meta.close();
         system("python3 analyze.py");
     }
