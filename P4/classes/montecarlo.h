@@ -25,7 +25,7 @@ public:
     uniform_real_distribution<float> rand_float;
 
     MonteCarlo(Spins spins);
-    void solve(int cycles, mt19937 &engine);
+    void solve(int cycles, mt19937_64 &engine);
 };
 
 #endif

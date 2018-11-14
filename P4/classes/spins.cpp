@@ -24,7 +24,7 @@ int Spins::periodic(int x)
     }
 }
 
-void Spins::init(int L, double T, double J, mt19937 &engine)
+void Spins::init(int L, double T, double J, mt19937_64 &engine)
 {
     this->L = L;
     this->T = T;
@@ -42,7 +42,7 @@ void Spins::init(int L, double T, double J, mt19937 &engine)
 
 Spins::Spins(){};
 
-Spins::Spins(int L, double T, double J, mt19937 &engine)
+Spins::Spins(int L, double T, double J, mt19937_64 &engine)
 {
     init(L, T, J, engine);
     ensemble = zeros<Mat<int>>(L,L);
@@ -57,7 +57,7 @@ Spins::Spins(int L, double T, double J, mt19937 &engine)
     calcMagnetization();
 }
 
-Spins::Spins(Mat<int> ensemble, int L, double T, double J, mt19937 &engine)
+Spins::Spins(Mat<int> ensemble, int L, double T, double J, mt19937_64 &engine)
 {
     init(L, T, J, engine);
     this->ensemble = ensemble;
@@ -97,7 +97,7 @@ void Spins::print()
     cout << ensemble << endl;
 }
 
-void Spins::tryflip(double &aA, mt19937 &engine)
+void Spins::tryflip(double &aA, mt19937_64 &engine)
 {
     x = rand_coord(engine);
     y = rand_coord(engine);

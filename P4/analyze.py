@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -66,7 +68,7 @@ P = {}
 # Goes though the different enegy states that occured and counts how often they
 # occured.
 for i in range(cores):
-    for j in range(cycles):
+    for j in range(cutoff, cycles):
         energy = E[i, j]
         if energy in P:
             P[energy] += 1

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,8 +18,8 @@ N = int(m.ceil((T_end - T_start) / T_step))
 file = open("results/evolution_L=%s.txt" % L, "w")
 
 for i in range(N + 1):
-    os.system("mpirun -np 8 ./simulation.x %s %s %s %s" %
-              (cycles, cutoff, L, (T_start + i * T_step)))
+    os.system("mpirun -np 8 ./simulation.x %s %s %s %s %s" %
+              (cycles, cutoff, L, (T_start + i * T_step),i))
     expect = np.loadtxt("results/expection.txt", usecols=0)
     for val in expect:
         file.write("%s " % val)

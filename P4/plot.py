@@ -1,5 +1,15 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import numpy as np
 import matplotlib.pyplot as plt
+
+# Set fontsizes in figures
+params = {'legend.fontsize': 'x-large',
+          'axes.labelsize': 'x-large',
+          'axes.titlesize': 'x-large',
+          'xtick.labelsize': 'x-large',
+          'ytick.labelsize': 'x-large'}
+plt.rcParams.update(params)
 
 # Information about the dimmensions of the data set
 meta = np.loadtxt("results/meta.txt", usecols=0)
@@ -50,10 +60,6 @@ plt.plot(state, prob, "o")
 plt.xlabel("energy")
 plt.ylabel("probability")
 plt.legend(["distribution, L=%s, T=%s" % (L, T)])
+plt.grid()
 fig.savefig("plots/distribution_L=%s_T=%s.pdf" % (L, T))
-# -----------------------------------------------------------------------------
-
-# numerical vs. analytical
-# -----------------------------------------------------------------------------
-
 # -----------------------------------------------------------------------------

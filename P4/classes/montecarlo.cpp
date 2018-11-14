@@ -15,7 +15,7 @@ MonteCarlo::MonteCarlo(Spins spins)
     this->spins = spins;
     rand_float = uniform_real_distribution<float>(0,1);
 }
-void MonteCarlo::solve(int cycles, mt19937 &engine)
+void MonteCarlo::solve(int cycles, mt19937_64 &engine)
 {
     energyAndMag = new int[2*cycles];
 

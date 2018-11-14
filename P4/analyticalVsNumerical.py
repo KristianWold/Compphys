@@ -1,5 +1,17 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+# Set fontsizes in figures
+params = {'legend.fontsize': 'x-large',
+          'axes.labelsize': 'x-large',
+          'axes.titlesize': 'x-large',
+          'xtick.labelsize': 'x-large',
+          'ytick.labelsize': 'x-large'}
+plt.rcParams.update(params)
+
+N = sys.argv[1]
 
 file = "results/evolution_L=2.txt"
 t = np.loadtxt(file, usecols=0)
@@ -17,33 +29,38 @@ M = np.loadtxt(file, usecols=2)
 Cv = np.loadtxt(file, usecols=3)
 X = np.loadtxt(file, usecols=4)
 
-fig = plt.figure()
+fig = plt.figure(figsize=(10,8))
 plt.subplot(2, 2, 1)
-plt.xlabel("T")
-plt.ylabel("<E>")
-plt.plot(t, E, linewidth=0.5)
-plt.plot(T, E_anal, linewidth=0.5)
+plt.xlabel("$T$")
+plt.ylabel("$\\langle E \\rangle$")
+plt.plot(T, E_anal, linewidth=1.5)
+plt.plot(t, E)
+plt.legend(["Analytical","Numerical"], loc="best")
 plt.grid()
 
 plt.subplot(2, 2, 2)
-plt.xlabel("T")
-plt.ylabel("<|M|>")
-plt.plot(t, M, linewidth=0.5)
-plt.plot(T, M_anal, linewidth=0.5)
+plt.xlabel("$T$")
+plt.ylabel("$\\langle |M| \\rangle$")
+plt.plot(T, M_anal, linewidth=1.5)
+plt.plot(t, M)
+plt.legend(["Analytical","Numerical"], loc="best")
 plt.grid()
 
 plt.subplot(2, 2, 3)
-plt.xlabel("T")
-plt.ylabel("<Cv>")
-plt.plot(t, Cv, linewidth=0.5)
-plt.plot(T, Cv_anal, linewidth=0.5)
+plt.xlabel("$T$")
+plt.ylabel("$\\langle C_V \\rangle$")
+plt.plot(T, Cv_anal, linewidth=1.5)
+plt.plot(t, Cv)
+plt.legend(["Analytical","Numerical"], loc="best")
 plt.grid()
 
 plt.subplot(2, 2, 4)
-plt.xlabel("T")
-plt.ylabel("X")
-plt.plot(t, X, linewidth=0.5)
-plt.plot(T, X_anal, linewidth=0.5)
+plt.xlabel("$T$")
+plt.ylabel("$\\langle \\chi \\rangle$")
+plt.plot(T, X_anal, linewidth=1.5)
+plt.plot(t, X)
+plt.legend(["Analytical","Numerical"], loc="best")
 plt.grid()
 
-fig.savefig("plots/numericalVsAnalytical.pdf")
+plt.gcf().set_tight_layout(True)
+fig.savefig("plots/numericalVsAnalytical_N=%s.pdf"%N)

@@ -21,7 +21,7 @@ private:
     //takes care of the periodic boundary conditions
     int periodic(int x);
 
-    void init(int L, double T, double J, mt19937 &engine);
+    void init(int L, double T, double J, mt19937_64 &engine);
 public:
     int L;               //Dimenstionality LxL
     double J;            //Coupling constant
@@ -36,8 +36,8 @@ public:
 
 
     Spins();
-    Spins(int L, double T, double J, mt19937 &engine);
-    Spins(Mat<int> ensemble, int L, double T, double J, mt19937 &engine);
+    Spins(int L, double T, double J, mt19937_64 &engine);
+    Spins(Mat<int> ensemble, int L, double T, double J, mt19937_64 &engine);
 
     void calcEnergy();
 
@@ -45,7 +45,7 @@ public:
 
     void print();
 
-    void tryflip(double &aA, mt19937 &engine);
+    void tryflip(double &aA, mt19937_64 &engine);
     void flip();
 };
 
