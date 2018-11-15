@@ -51,10 +51,10 @@ M2 /= length
 Cv = 1 / T**2 * (E2 - E_mean**2)
 X = 1 / T * (M2 - M_mean**2)
 
-E_mean /= L * L  # Per spin
-M_mean /= L * L
-Cv /= L * L
-X /= L * L
+E_mean /= L**2  # Per spin
+M_mean /= L**2
+Cv /= L**2
+X /= L**2
 
 print("T = %s" % T)
 print("Energy = %s" % E_mean)
@@ -63,24 +63,3 @@ print("Heat Capacity  = %s" % Cv)
 print("Susceptibility  = %s" % X)
 
 np.savetxt("results/expection.txt", (T, E_mean, M_mean, Cv, X))
-
-P = {}
-# Goes though the different enegy states that occured and counts how often they
-# occured.
-for i in range(cores):
-    for j in range(cutoff, cycles):
-        energy = E[i, j]
-        if energy in P:
-            P[energy] += 1
-        else:
-            P[energy] = 1
-
-# Normalizes the probability
-for p in P:
-    P[p] /= length * cores
-
-state = list(P.values())  # state of a specific energy
-prob = list(P.keys())     # probaility of energy to occur
-
-np.savetxt("results/distribution.txt", np.transpose((prob, state)))
-plt.show()

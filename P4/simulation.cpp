@@ -25,16 +25,17 @@ int main(int argc, char *argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
-
     cycles = totalCycles/numprocs + cutoff;
 
     mt19937_64 engine(seed + 1000*my_rank);
     //Spins crystal(L, T, 1, engine);                         //Disodered lattice
     Spins crystal(ones<Mat<int>>(L,L), L, T, 1, engine);  //Ordered lattice
     MonteCarlo MC(crystal);
+
     double start = MPI_Wtime();
     MC.solve(cycles, engine);
     double finish = MPI_Wtime();
+
     local = MC.energyAndMag;
 
     if(my_rank == 0)
@@ -57,7 +58,6 @@ int main(int argc, char *argv[])
     {
         MPI_Send(local, 2*cycles, MPI_INT, 0, 500, MPI_COMM_WORLD);
     }
-    MPI_Finalize();
 
     if(my_rank == 0)
     {
@@ -74,5 +74,6 @@ int main(int argc, char *argv[])
         meta.close();
         system("python3 analyze.py");
     }
+    MPI_Finalize();
     return 0;
 }

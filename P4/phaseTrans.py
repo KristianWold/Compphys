@@ -29,8 +29,8 @@ polynom = np.poly1d(fit)
 fig = plt.figure()
 plt.plot(1. / L, t[maxX], "o")
 plt.plot(1. / L, polynom(1. / L))
-plt.xlabel("1/L")
-plt.ylabel("Tc")
+plt.xlabel("$1/L$")
+plt.ylabel("$T_c$ $[\,J/k_B\,]$")
 plt.legend(["Finite Lattice", "%.4f x + %.4f" % (fit[0], fit[1])])
 plt.grid()
 fig.savefig("plots/critTemp.pdf")
@@ -38,36 +38,40 @@ fig.savefig("plots/critTemp.pdf")
 fig = plt.figure()
 for i in range(len(L)):
     plt.plot(t, E[i], linewidth=0.8)
-plt.xlabel("T")
-plt.ylabel("<E>")
-plt.legend(["L=40", "L=60", "L=100", "L=160"])
+plt.xlabel("T $[\,J/k_B\,]$")
+plt.ylabel("$\\langle E \\rangle /L^2$ $[\,J\,]$")
+plt.legend(["40x40 Lattice", "60x60 Lattice", "100x100 Lattice",
+            "160x160 Lattice"])
 plt.grid()
 fig.savefig("plots/evolution_energy.pdf")
 
 fig = plt.figure()
 for i in range(len(L)):
     plt.plot(t, M[i], linewidth=0.8)
-plt.xlabel("T")
-plt.ylabel("<|M|>")
-plt.legend(["L=40", "L=60", "L=100", "L=160"])
+plt.xlabel("T $[\,J/k_B\,]$")
+plt.ylabel("$\\langle |M| \\rangle /L^2$")
+plt.legend(["40x40 Lattice", "60x60 Lattice", "100x100 Lattice",
+            "160x160 Lattice"])
 plt.grid()
 fig.savefig("plots/evolution_magnetization.pdf")
 
 fig = plt.figure()
 for i in range(len(L)):
     plt.plot(t, Cv[i], linewidth=0.8)
-plt.xlabel("T")
-plt.ylabel("Cv")
-plt.legend(["L=40", "L=60", "L=100", "L=160"])
+plt.xlabel("T $[\,J/k_B\,]$")
+plt.ylabel("$ C_V /L^2$ $[\,k_B\,]$")
+plt.legend(["40x40 Lattice", "60x60 Lattice", "100x100 Lattice",
+            "160x160 Lattice"])
 plt.grid()
 fig.savefig("plots/evolution_cv.pdf")
 
 fig = plt.figure()
 for i in range(len(L)):
     plt.plot(t, X[i], linewidth=0.8)
-plt.xlabel("T")
-plt.ylabel("$\chi$")
-plt.legend(["L=40", "L=60", "L=100", "L=160"])
+plt.xlabel("T $[\,J/k_B\,]$")
+plt.ylabel("$\\chi /L^2$")
+plt.legend(["40x40 Lattice", "60x60 Lattice", "100x100 Lattice",
+            "160x160 Lattice"])
 plt.grid()
 fig.savefig("plots/evolution_susceptibility.pdf")
 # -----------------------------------------------------------------------------

@@ -32,22 +32,21 @@ for i in range(cores):
     E[i] = array[start:end]
     M[i] = array[(start + cycles):(end + cycles)]
 
+    fig = plt.figure()
+    plt.plot(E[i] / L**2)
+    plt.xlabel("Cycle")
+    plt.ylabel("Energy per spin")
+    plt.legend(["energy, L=%s, T=%s" % (L, T)])
+    #    plt.legend("Energy of system")
+    fig.savefig("plots/plot_energy_L=%s_T=%s.pdf" % (L, T))
 
-fig = plt.figure()
-plt.plot(E[i] / L**2)
-plt.xlabel("Cycle")
-plt.ylabel("Energy per spin")
-plt.legend(["energy, L=%s, T=%s" % (L, T)])
-#    plt.legend("Energy of system")
-fig.savefig("plots/plot_energy_L=%s_T=%s.pdf" % (L, T))
-
-fig = plt.figure()
-plt.plot(M[i] / L**2)
-plt.xlabel("Cycle")
-plt.ylabel("magnetization per spin")
-plt.legend(["magnetization, L=%s, T=%s" % (L, T)])
-#    plt.legend("Energy of system")
-fig.savefig("plots/plot_magnetization_L=%s_T=%s.pdf" % (L, T))
+    fig = plt.figure()
+    plt.plot(M[i] / L**2)
+    plt.xlabel("Cycle")
+    plt.ylabel("magnetization per spin")
+    plt.legend(["magnetization, L=%s, T=%s" % (L, T)])
+    #    plt.legend("Energy of system")
+    fig.savefig("plots/plot_magnetization_L=%s_T=%s.pdf" % (L, T))
 
 
 # probability distribution
