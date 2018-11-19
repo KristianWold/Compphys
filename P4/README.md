@@ -15,6 +15,7 @@ folder contains all the results produced in this project.
 **Usage**
 
 To compile the c++ implementation of the Metropolis Algorithm, run `make simulation.x`.
+
 To perform benchmarking, run `python evolution N 1000 2 1 3 0.01`, where N is the desired
 number of cycles. Run then `python analyticalVsNumerical N` to produce the plot.
 
