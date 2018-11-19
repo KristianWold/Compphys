@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+"""
+This program contains procedures for running the simulation and writing the
+results to file for multiple temperatures around the critical temperature
+"""
+
 import os
 import numpy as np
-import matplotlib.pyplot as plt
 import math as m
 import sys
 
@@ -15,12 +20,12 @@ T_step = float(sys.argv[6])
 
 N = int(m.ceil((T_end - T_start) / T_step))
 
-file = open("results/evolution_L=%s.txt" % L, "w")
+file = open("./results/evolution_L=%s.txt" % L, "w")
 
 for i in range(N + 1):
-    os.system("mpirun -np 8 ./simulation.x %s %s %s %s %s" %
-              (cycles, cutoff, L, (T_start + i * T_step),i))
-    expect = np.loadtxt("results/expection.txt", usecols=0)
+    os.system("mpirun -np 2 ./simulation.x %s %s %s %s %s" %
+              (cycles, cutoff, L, (T_start + i * T_step), i))
+    expect = np.loadtxt("./results/expectation.txt", usecols=0)
     for val in expect:
         file.write("%s " % val)
     file.write("\n")

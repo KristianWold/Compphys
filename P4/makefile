@@ -14,23 +14,17 @@ INCL :=
 LIB := -DARMA_DONT_USE_WRAPPER -lblas -llapack
 endif
 
-simulation.x: simulation.o spins.o montecarlo.o
+simulation.x: simulation.o ising.o metropolis.o
 	${CXX} ${CPPflags} -o $@ $^ ${INCL} ${LIB}
 
 simulation.o: simulation.cpp
 	${CXX} ${CPPflags} -c $^ ${INCL} ${LIB}
 
-spins.o: classes/spins.cpp
+ising.o: classes/ising.cpp
 	g++ ${CPPflags} -c $^ ${INCL} ${LIB}
 
-montecarlo.o: classes/montecarlo.cpp
+metropolis.o: classes/metropolis.cpp
 	g++ ${CPPflags} -c $^ ${INCL} ${LIB}
-
-test.x: test.o
-	${CXX} ${CPPflags} -o $@ $^ ${INCL} ${LIB}
-
-test.o: test.cpp
-	${CXX} ${CPPflags} -c $^ ${INCL} ${LIB}
 
 clean:
 	rm -f *.o *.txt *.x
