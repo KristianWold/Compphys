@@ -7,7 +7,7 @@
 #include <map>
 #include <random>
 #include "ising.hpp"
-#include "metropolis.h"
+#include "metropolis.hpp"
 
 using namespace std;
 using namespace arma;
