@@ -15,6 +15,7 @@ MonteCarlo::MonteCarlo(Spins spins)
     this->spins = spins;
     rand_float = uniform_real_distribution<float>(0,1);
 }
+
 void MonteCarlo::solve(int cycles, mt19937_64 &engine)
 {
     energyAndMag = new int[2*cycles];
@@ -23,10 +24,11 @@ void MonteCarlo::solve(int cycles, mt19937_64 &engine)
     energyAndMag[cycles] = M = abs(spins.magnetization);
 
     accepted = 0;
+    int L2 = spins.L*spins.L;
     for(int i=1; i<cycles; i++)
     {
         //Sweeps over LxL spin matrix
-        for(int j=0; j<spins.L*spins.L; j++)
+        for(int j=0; j<L2; j++)
         {
             spins.tryflip(acceptAmp, engine);
             if(rand_float(engine) < acceptAmp)

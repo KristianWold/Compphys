@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math as m
 import sys
+import scipy.stats as stats
 
 # phase transtion
 # -----------------------------------------------------------------------------
@@ -23,15 +24,14 @@ for l in L:
 
 
 maxX = np.argmax(X, axis=1)
-fit = np.polyfit(1. / L, t[maxX], 1)
-polynom = np.poly1d(fit)
+m, b, r_value, p_value, std_err = stats.linregress(1./L,t[maxX])
 
 fig = plt.figure()
 plt.plot(1. / L, t[maxX], "o")
-plt.plot(1. / L, polynom(1. / L))
+plt.plot(1. / L, m*(1. / L) + b)
 plt.xlabel("$1/L$")
 plt.ylabel("$T_c$ $[\,J/k_B\,]$")
-plt.legend(["Finite Lattice", "%.4f x + %.4f" % (fit[0], fit[1])])
+plt.legend(["Finite Lattice", "%.4f x + %.4f $\\pm$ %s" % (m, b,std_err)])
 plt.grid()
 fig.savefig("plots/critTemp.pdf")
 

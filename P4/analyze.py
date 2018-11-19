@@ -62,4 +62,4 @@ print("Magnetization = %s" % M_mean)
 print("Heat Capacity  = %s" % Cv)
 print("Susceptibility  = %s" % X)
 
-np.savetxt("results/expection.txt", (T, E_mean, M_mean, Cv, X))
+np.savetxt("results/expectation.txt", (T, E_mean, M_mean, Cv, X))
