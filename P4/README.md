@@ -26,3 +26,5 @@ To produce the probability distribution, run `python distribution.py`.
 To produce plots of the number of accepted states as a function of N and T, run `python acceptedStates.py`.
 
 To produce the plots showing the phase transition and finite size scaling, run `python phaseTrans.py`.
+
+To test some of the code, run `make test.x`.

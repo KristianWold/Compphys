@@ -26,5 +26,12 @@ ising.o: classes/ising.cpp
 metropolis.o: classes/metropolis.cpp
 	g++ ${CPPflags} -c $^ ${INCL} ${LIB}
 
+test.x: test.o ising.o metropolis.o
+	g++ ${CPPflags} -o $@ $^ ${INCL} ${LIB}
+	./test.x
+
+test.o: classes/test.cpp
+	g++ ${CPPflags} -c $^ ${INCL} ${LIB}
+
 clean:
 	rm -f *.o *.txt *.x

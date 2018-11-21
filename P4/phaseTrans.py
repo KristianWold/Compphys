@@ -34,7 +34,8 @@ for l in L:
 
 
 maxX = np.argmax(X, axis=1)
-fit = np.polyfit(1. / L, t[maxX], 1)
+fit, V = np.polyfit(1. / L, t[maxX], 1, cov=True)
+error = sqrt(V[1][1])
 polynom = np.poly1d(fit)
 
 fig = plt.figure()
@@ -42,7 +43,8 @@ plt.plot(1. / L, t[maxX], "o")
 plt.plot(1. / L, polynom(1. / L))
 plt.xlabel("$1/L$")
 plt.ylabel("$T_c$ $[\,J/k_B\,]$")
-plt.legend(["Finite Lattice", "%.4f x + %.4f" % (fit[0], fit[1])])
+plt.legend(["Finite Lattice", "%.4f x + %.4f +- %.4" %
+            (fit[0], fit[1], error)])
 plt.grid()
 fig.savefig("./plots/critTemp.pdf")
 
