@@ -2,24 +2,31 @@
 #include<random>
 #include<iostream>
 #include<iomanip>
+#include <chrono>
 
 using namespace std;
+using namespace chrono;
 
 double acceptAmp(double alpha, double omega, double* delta, double* r)
 {
     double expo = delta[0]*(delta[0]+2*r[0]) + delta[1]*(delta[1]+2*r[1]) + delta[2]*(delta[2]+2*r[2]);
-    return exp(-alpha*omega*expo/2);
+    return exp(-alpha*omega*expo);
 }
 
 int main(int argc, char const *argv[])
 {
     int N = 2;
     int dim = 3;
-    double alpha = 2;
-    double omega = 1;
+    double alpha = atof(argv[1]);
+    double omega = atof(argv[2]);
+    int M = atoi(argv[3]);
+
     double step = 3/sqrt(alpha*omega);
     int accepted = 0;
+    double energy = 0;
     double E = 0;
+    double E2 = 0;
+    double V = 0;
     double R = 0;
 
     double* delta = new double[dim];
@@ -38,7 +45,7 @@ int main(int argc, char const *argv[])
     mt19937_64 engine;
     uniform_real_distribution<double> myRandu(0,1);
 
-    int M = 100000;
+    auto start = high_resolution_clock::now();
     for(int i=0; i<M; i++)
     {
         for(int j=0; j<N; j++)
@@ -63,16 +70,17 @@ int main(int argc, char const *argv[])
                 R += r[i][j]*r[i][j];
             }
         }
-
-        double R12 = sqrt(abs(r[0][0]*r[0][0] + r[0][1]*r[0][1] + r[0][2]*r[0][2]
-                            - r[1][0]*r[1][0] + r[1][1]*r[1][1] + r[1][2]*r[0][2]));
-
-        E+= 0.5*omega*omega*R*(1-alpha*alpha) + 3*alpha*omega;
+        energy = 0.5*omega*omega*R*(1-alpha*alpha) + 3*alpha*omega;
+        E+= energy;
+        E2 += energy*energy;
     }
+    auto finish = high_resolution_clock::now();
     E /= M;
+    V = E2/M - E*E;
 
-    cout << accepted << endl;
-    cout <<setprecision(10) << E << endl;
-
+    cout << "Times used: " << duration<double>(finish - start).count() << endl;
+    cout << "States accepted: " << accepted << "/" << M << endl;
+    cout << "Energy: " << setprecision(5) << E << endl;
+    cout << "Variance: " << setprecision(5) << V << endl;
     return 0;
 }
