@@ -17,9 +17,9 @@ int main(int argc, char const *argv[])
 {
     int N = 2;
     int dim = 3;
-    double alpha = atof(argv[1]);
-    double omega = atof(argv[2]);
-    int M = atoi(argv[3]);
+    double alpha = 0.9;
+    double omega = 1;
+    int M = 1000;
 
     double step = 3/sqrt(alpha*omega);
     int accepted = 0;
@@ -43,7 +43,7 @@ int main(int argc, char const *argv[])
     }
 
     mt19937_64 engine;
-    uniform_real_distribution<double> myRandu(0,1);
+    uniform_real_distribution<double> myRandu = uniform_real_distribution<double>(0,1);
 
     auto start = high_resolution_clock::now();
     for(int i=0; i<M; i++)

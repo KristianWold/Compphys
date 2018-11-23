@@ -1,0 +1,3 @@
+/tmp/ccprRlmq.o: In function `double arma::blas::dot<double>(unsigned long long, double const*, double const*)':
+VMC.cpp:(.text._ZN4arma4blas3dotIdEET_yPKS2_S4_[_ZN4arma4blas3dotIdEET_yPKS2_S4_]+0x4c): undefined reference to `wrapper_ddot_'
+collect2: error: ld returned 1 exit status

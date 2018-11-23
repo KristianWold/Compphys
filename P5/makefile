@@ -14,10 +14,10 @@ INCL :=
 LIB := -DARMA_DONT_USE_WRAPPER -lblas -llapack
 endif
 
-qmc.x: qmc.o
+VMC.x: VMC.o
 	${CXX} ${CPPflags} -o $@ $^
 
-qmc.o: qmc.cpp
+VMC.o: classes/VMC.cpp
 	${CXX} ${CPPflags} -c $^
 
 clean:
