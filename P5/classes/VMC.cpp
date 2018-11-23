@@ -41,7 +41,7 @@ public:
     void solve(int numCycles, int preCycles, double* params, double omega)
     {
         ofstream myfile;
-        step = 2.3/sqrt(params[0]*omega);
+        step = 2.1/sqrt(params[0]*omega);
         energy = 0;
         E = 0;
         E2 = 0;
@@ -81,7 +81,7 @@ public:
         //cout << "Times used: " << duration<double>(finish - start).count() << endl;
         cout << "Energy: " << E << "  For alpha=" << params[0] << " ,beta=" << params[1] << endl;
         cout << "Variance: " << V << endl;
-        //cout << "Accepted moves: " << accepted << "/" << (numParticles*numCycles) << endl;
+        cout << "Accepted moves: " << accepted << "/" << (numParticles*numCycles) << endl;
 
     }
 };
