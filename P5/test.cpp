@@ -13,7 +13,7 @@ int main()
 
 int main()
 {
-    vec A = -1*ones(3);
-    cout << norm(A,2) << endl;
+    mat A = ones(3,2);
+    cout << A.col(0) << endl;
     return 0;
 }

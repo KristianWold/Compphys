@@ -14,6 +14,13 @@ using namespace arma;
 typedef double (*myfunc1)(double*, double, mat&, vec&, int);
 typedef double (*myfunc2)(double*, double, mat&);
 
+struct result
+{
+    double E;
+    double V;
+    int accepted;
+};
+
 class VMC
 {
 public:
@@ -38,7 +45,7 @@ public:
         delta = zeros(numDim);
     }
 
-    void solve(int numCycles, int preCycles, double* params, double omega)
+    result solve(int numCycles, int preCycles, double* params, double omega)
     {
         ofstream myfile;
         step = 2.1/sqrt(params[0]*omega);
@@ -78,13 +85,13 @@ public:
         E /= numCycles;
         E2 /= numCycles;
         V = E2 - E*E;
-        //cout << "Times used: " << duration<double>(finish - start).count() << endl;
-        cout << "Energy: " << E << "  For alpha=" << params[0] << " ,beta=" << params[1] << endl;
-        cout << "Variance: " << V << endl;
-        cout << "Accepted moves: " << accepted << "/" << (numParticles*numCycles) << endl;
 
+        result myResult = {E,V,accepted};
+        return myResult;
     }
 };
+
+
 
 
 inline double acceptAmp1(double* params, double omega, mat &r, vec &delta, int num)
@@ -95,6 +102,13 @@ inline double acceptAmp1(double* params, double omega, mat &r, vec &delta, int n
 }
 
 inline double localEnergy1(double* params, double omega, mat &r)
+{
+    double R2 = accu(mat(r%r));
+    double alpha = params[0];
+    return 0.5*omega*omega*R2*(1-alpha*alpha) + 3*alpha*omega;
+}
+
+inline double localEnergyInteract(double* params, double omega, mat &r)
 {
     double R2 = accu(mat(r%r));
     double alpha = params[0];
@@ -125,7 +139,7 @@ inline double localEnergy2(double* params, double omega, mat &r)
 
     double R12 = norm(r.col(0) - r.col(1));
     double BR = 1 + beta*R12;
-    return localEnergy1(params, omega, r) +
+    return localEnergy1(params, omega, r) + 1/R12 +
     1/(2*BR*BR)*(alpha*omega*R12 - 1/(2*BR*BR) - 2/R12 + 2*beta/BR);
 }
 
@@ -140,18 +154,32 @@ int main(int argc, char const *argv[]) {
     params[0] = alpha;
     params[1] = beta;
     VMC solver(3, 2, &acceptAmp2, &localEnergy2);
-    solver.solve(numCycles, preCycles, params, omega);
-    /*
+
+    double minE = 10;
+    double minV = 0;
+    double minAlpha = 0;
+    double minBeta = 0;
+
     for(int i=0; i<50; i++)
     {
         for(int j=0; j<50; j++)
         {
-            params[0] =  0.75+0.01*i;
-            params[1] =  0.75+0.01*j;
-
-            solver.solve(numCycles, preCycles, params, omega);
-
+            params[0] =  0.92+0.0005*i;
+            params[1] =  0.66+0.0005*j;
+            result myResult = solver.solve(numCycles, preCycles, params, omega);
+            if(myResult.E < minE)
+            {
+                minE = myResult.E;
+                minV = myResult.V;
+                minAlpha = params[0];
+                minBeta = params[1];
+            }
         }
-    }*/
+    }
+    cout << "Smallest energy= " << minE << endl;
+    cout << "Smallet Variance= " << minV << endl;
+    cout << minAlpha << endl;
+    cout << minBeta << endl;
+
     return 0;
 }
