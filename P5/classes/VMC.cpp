@@ -72,9 +72,11 @@ public:
             }
             if(i>=preCycles)
             {
-                myfile << pos(0,0) << " " << pos(1,0) << " " << pos(2,0) << " "
-                       << pos(0,1) << " " << pos(1,1) << " " << pos(2,1) << "\n";
                 energy = localEnergy(params, omega, pos);
+                myfile << pos(0,0) << " " << pos(1,0) << " " << pos(2,0) << " "
+                       << pos(0,1) << " " << pos(1,1) << " " << pos(2,1) << " "
+                       << energy << "\n";
+
                 E += energy;
                 E2 += energy*energy;
             }
@@ -154,10 +156,11 @@ int main(int argc, char const *argv[]) {
     VMC solver1(3, 2, &acceptAmp1, &localEnergy1);
     VMC solver2(3, 2, &acceptAmp1, &localEnergyInteract);
     VMC solver3(3, 2, &acceptAmp2, &localEnergy2);
-    /*result myResult = solver.solve(numCycles, preCycles, params, omega);
+    /*result myResult = solver1.solve(numCycles, preCycles, params, omega);
     cout << "Energy= " << myResult.E << endl;
     cout << "Variance= " << myResult.V << endl;
     */
+    /*
     ofstream myfile;
     myfile.open("moredata.txt");
     for(int i=0; i<=38; i++)
@@ -169,25 +172,32 @@ int main(int argc, char const *argv[]) {
         myfile << params[0] << " " << myResult1.E << " " << myResult2.E << " " << myResult3.E << endl;
     }
     myfile.close();
-    /*
+    */
+
     double minE = 10;
     double minV = 0;
     double minAlpha = 0;
     double minBeta = 0;
 
-    for(int i=0; i<50; i++)
+    int count = 0;
+    for(int i=0; i<100; i++)
     {
-        for(int j=0; j<50; j++)
+        for(int j=0; j<100; j++)
         {
-            params[0] =  0.92+0.0005*i;
-            params[1] =  0.66+0.0005*j;
-            result myResult = solver.solve(numCycles, preCycles, params, omega);
+            params[0] =  0.4+0.01*i;
+            params[1] =  0.4+0.01*j;
+            result myResult = solver3.solve(numCycles, preCycles, params, omega);
             if(myResult.E < minE)
             {
                 minE = myResult.E;
                 minV = myResult.V;
                 minAlpha = params[0];
                 minBeta = params[1];
+            }
+            count++;
+            if(count%100 == 0)
+            {
+                cout << count/100 <<'%' << endl;
             }
         }
     }
@@ -196,6 +206,6 @@ int main(int argc, char const *argv[]) {
     cout << "Smallet Variance= " << minV << endl;
     cout << minAlpha << endl;
     cout << minBeta << endl;
-*/
+
     return 0;
 }

@@ -8,6 +8,10 @@ fig = plt.figure()
 x1 = np.loadtxt("data.txt", usecols=(0, 1, 2))
 x2 = np.loadtxt("data.txt", usecols=(3, 4, 5))
 
+"""E = np.loadtxt("data.txt", usecols=6)
+plt.plot(E)
+plt.show()
+"""
 a = np.loadtxt("moredata.txt", usecols=0)
 E1 = np.loadtxt("moredata.txt", usecols=1)
 E2 = np.loadtxt("moredata.txt", usecols=2)
