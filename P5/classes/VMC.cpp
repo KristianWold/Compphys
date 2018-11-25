@@ -92,8 +92,6 @@ public:
 };
 
 
-
-
 inline double acceptAmp1(double* params, double omega, mat &r, vec &delta, int num)
 {
     double alpha = params[0];
@@ -153,8 +151,25 @@ int main(int argc, char const *argv[]) {
     double* params = new double[2];
     params[0] = alpha;
     params[1] = beta;
-    VMC solver(3, 2, &acceptAmp2, &localEnergy2);
-
+    VMC solver1(3, 2, &acceptAmp1, &localEnergy1);
+    VMC solver2(3, 2, &acceptAmp1, &localEnergyInteract);
+    VMC solver3(3, 2, &acceptAmp2, &localEnergy2);
+    /*result myResult = solver.solve(numCycles, preCycles, params, omega);
+    cout << "Energy= " << myResult.E << endl;
+    cout << "Variance= " << myResult.V << endl;
+    */
+    ofstream myfile;
+    myfile.open("moredata.txt");
+    for(int i=0; i<=38; i++)
+    {
+        params[0] = 0.1 + 0.05*i;
+        result myResult1 = solver1.solve(numCycles, preCycles, params, omega);
+        result myResult2 = solver2.solve(numCycles, preCycles, params, omega);
+        result myResult3 = solver3.solve(numCycles, preCycles, params, omega);
+        myfile << params[0] << " " << myResult1.E << " " << myResult2.E << " " << myResult3.E << endl;
+    }
+    myfile.close();
+    /*
     double minE = 10;
     double minV = 0;
     double minAlpha = 0;
@@ -176,10 +191,11 @@ int main(int argc, char const *argv[]) {
             }
         }
     }
+
     cout << "Smallest energy= " << minE << endl;
     cout << "Smallet Variance= " << minV << endl;
     cout << minAlpha << endl;
     cout << minBeta << endl;
-
+*/
     return 0;
 }
