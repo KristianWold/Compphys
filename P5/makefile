@@ -20,5 +20,11 @@ VMC.x: VMC.o
 VMC.o: classes/VMC.cpp
 	${CXX} ${CPPflags} -c $^
 
+test.x: test.o
+	${CXX} ${CPPflags} -o $@ $^
+
+test.o: test.cpp
+	${CXX} ${CPPflags} -c $^
+
 clean:
 	rm -f *.o *.txt *.x

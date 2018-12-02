@@ -1,0 +1,5 @@
+/tmp/ccmEf19U.o: In function `double arma::op_norm::vec_norm_1_direct_std<double>(arma::Mat<double> const&)':
+test.cpp:(.text._ZN4arma7op_norm21vec_norm_1_direct_stdIdEET_RKNS_3MatIS2_EE[_ZN4arma7op_norm21vec_norm_1_direct_stdIdEET_RKNS_3MatIS2_EE]+0x8d): undefined reference to `wrapper_dasum_'
+/tmp/ccmEf19U.o: In function `double arma::op_norm::vec_norm_2_direct_std<double>(arma::Mat<double> const&)':
+test.cpp:(.text._ZN4arma7op_norm21vec_norm_2_direct_stdIdEET_RKNS_3MatIS2_EE[_ZN4arma7op_norm21vec_norm_2_direct_stdIdEET_RKNS_3MatIS2_EE]+0x91): undefined reference to `wrapper_dnrm2_'
+collect2: error: ld returned 1 exit status
