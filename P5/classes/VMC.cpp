@@ -174,12 +174,16 @@ int main(int argc, char const *argv[]) {
     double* params = new double[2];
     params[0] = alpha;
     params[1] = beta;
-    VMC solver1(3, 2, &acceptAmp1, &localKinetic2, &localPotential2);
+
+    VMC solver1(3, 2, &acceptAmp2, &localKinetic2, &localPotential2);
     result myResult = solver1.solve(numCycles, preCycles, params, omega);
+
     cout << "Energy = " << myResult.E << endl;
     cout << "Variance = " << myResult.Var << endl;
     cout << "Ratio = " << myResult.kinetic/myResult.potential << endl;
     cout << "<|r1 - r2|> = " << myResult.R12 << endl;
+    cout << "Accepted " << myResult.accepted << endl;
+
 
     return 0;
 }
