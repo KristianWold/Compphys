@@ -81,11 +81,12 @@ int main(int argc, char const *argv[]) {
 
     VMC solver(3, 2, &acceptAmp2, &localKinetic2, &localPotential2);
 
-    solver.optimize(params, 0.8, 20, 4, numCycles, preCycles);
+    //solver.optimize(params, 0.6, 20, 20, numCycles, preCycles);
     cout << params[0] << endl;
     cout << params[1] << endl;
-    result myResult = solver.solve(numCycles, preCycles, params, omega, true);
+    Result myResult = solver.solve(numCycles, preCycles, params, omega, true);
     cout << myResult.E << endl;
+    cout << myResult.kinetic/myResult.potential << endl;
 
     return 0;
 }

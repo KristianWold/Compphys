@@ -23,7 +23,7 @@ VMC::VMC(int numDim, int numParticles, myfunc1 acceptAmp, myfunc2 localKinetic, 
     delta = zeros(numDim);
 }
 
-result VMC::solve(int numCycles, int preCycles, double* params, double omega, bool writeToFile)
+Result VMC::solve(int numCycles, int preCycles, double* params, double omega, bool writeToFile)
 {
     ofstream myfile;
     step = 2.1/sqrt(params[0]*omega);
@@ -79,7 +79,7 @@ result VMC::solve(int numCycles, int preCycles, double* params, double omega, bo
     p_E /= numCycles;
     R12 /= numCycles;
 
-    result myResult = {E, Var, k_E, p_E, R12, accepted};
+    Result myResult = {E, Var, k_E, p_E, R12, accepted};
     return myResult;
 }
 
@@ -89,7 +89,7 @@ void VMC::optimize(double *params, double range, int step,
     int paramToChange = 0;  //parameter to increment
     double energy = 1e10;   //minimum energy, starts as a arbitrary large number
     double newEnergy = 0;
-    int count = 0;          //how many times the parameters have been
+    int count = 0;          //how many times the parameters have been tweaked
     double *tempParams = new double[2]; //temporary values for the parameters
 
     while(count<maxIter)
@@ -119,7 +119,7 @@ void VMC::optimize(double *params, double range, int step,
         {
             paramToChange = 0;  //swap back to the first parameter
             count++;
-            range /= 0.5*step;  //and decrese the range to increse resolution
+            range /= 2;  //and decrese the range to increse resolution
             if((100*count)%maxIter == 0)
             {
                 cout << (100*count)/maxIter << endl;

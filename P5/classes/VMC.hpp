@@ -17,7 +17,7 @@ using namespace arma;
 typedef double (*myfunc1)(double*, double, mat&, vec&, int);
 typedef double (*myfunc2)(double*, double, mat&);
 
-struct result
+struct Result
 {
     double E;
     double Var;
@@ -42,7 +42,7 @@ public:
 
     VMC(int numDim, int numParticles, myfunc1 acceptAmp, myfunc2 localKinetic, myfunc2 localPotential);
 
-    result solve(int numCycles, int preCycles, double* params, double omega, bool writeToFile);
+    Result solve(int numCycles, int preCycles, double* params, double omega, bool writeToFile);
 
     void optimize(double *params, double range, int step,
                   int maxIter, int numCycles, int preCycles);
