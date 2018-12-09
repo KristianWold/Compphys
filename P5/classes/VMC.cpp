@@ -23,52 +23,66 @@ VMC::VMC(int numDim, int numParticles, myfunc1 acceptAmp, myfunc2 localKinetic, 
     delta = zeros(numDim);
 }
 
+void VMC::mcCycle()
+{
+    for(int j=0; j<numParticles; j++)
+    {
+        for(int k=0; k<numDim; k++)
+        {
+            delta(k) = (myRandu(engine) - 0.5)*step;
+        }
+        if(myRandu(engine)<acceptAmp(params, omega, pos, delta, j))
+        {
+            pos.col(j) += delta;
+            accepted++;
+        }
+    }
+}
+
 Result VMC::solve(int numCycles, int preCycles, double* params, double omega, bool writeToFile)
 {
+    this->numCycles = numCycles;
+    this->preCycles = preCycles;
+    this->params = params;
+    this-> omega = omega;
+
     ofstream myfile;
-    step = 2.1/sqrt(params[0]*omega);
-    kineticE = 0;
-    potentialE = 0;
-    k_E = 0;
-    p_E = 0;
-    E = 0;
-    E2 = 0;
-    Var = 0;
-    R12 = 0;
+    step = 1;
+    kineticE = potentialE = k_E = p_E = E = E2 = Var = R12 = 0;
     accepted = 0;
 
-    myfile.open("data.txt");
-    for(int i=0; i<numCycles+preCycles; i++)
+    int interval = int(0.1*preCycles) + 1;
+    for(int i=0; i<preCycles; i++)
     {
-        for(int j=0; j<numParticles; j++)
-        {
-            for(int k=0; k<numDim; k++)
-            {
-                delta(k) = (myRandu(engine) - 0.5)*step;
-            }
-            if(myRandu(engine)<acceptAmp(params, omega, pos, delta, j))
-            {
-                pos.col(j) += delta;
-                accepted++;
-            }
-        }
-        if(i>=preCycles)
-        {
-            kineticE = localKinetic(params, omega, pos);
-            potentialE = localPotential(params, omega, pos);
-            if(writeToFile)
-            {
-                myfile << pos(0,0) << " " << pos(1,0) << " " << pos(2,0) << " "
-                       << pos(0,1) << " " << pos(1,1) << " " << pos(2,1) << " "
-                       << kineticE + potentialE << "\n";
-            }
+        mcCycle();
 
-            k_E += kineticE;
-            p_E += potentialE;
-            E += kineticE + potentialE;
-            E2 += (kineticE + potentialE)*(kineticE + potentialE);
-            R12 += norm(pos.col(0) - pos.col(1));
+        if((i+1)%interval == 0)
+        {
+            //tweaks the step if accept rate is more or less than 0.5
+            step *= 2*double(accepted)/(numParticles*interval);
+            accepted = 0;
         }
+    }
+
+    myfile.open("data.txt");
+    for(int i=0; i<numCycles; i++)
+    {
+        mcCycle();
+        //start accumulating data
+        kineticE = localKinetic(params, omega, pos);
+        potentialE = localPotential(params, omega, pos);
+        if(writeToFile)
+        {
+            myfile << pos(0,0) << " " << pos(1,0) << " " << pos(2,0) << " "
+                   << pos(0,1) << " " << pos(1,1) << " " << pos(2,1) << " "
+                   << kineticE + potentialE << "\n";
+        }
+
+        k_E += kineticE;
+        p_E += potentialE;
+        E += kineticE + potentialE;
+        E2 += (kineticE + potentialE)*(kineticE + potentialE);
+        R12 += norm(pos.col(0) - pos.col(1));
     }
     myfile.close();
 
@@ -83,13 +97,13 @@ Result VMC::solve(int numCycles, int preCycles, double* params, double omega, bo
     return myResult;
 }
 
-void VMC::optimize(double *params, double range, int step,
+void VMC::optimize(double *params, int numParams, double range, int step,
               int maxIter, int numCycles, int preCycles)
 {
-    int paramToChange = 0;  //parameter to increment
-    double energy = 1e10;   //minimum energy, starts as a arbitrary large number
+    int paramToChange = numParams -1;  //parameter to increment, start with last
+    double energy = 1e10;   //minimum energy, starts as an arbitrary large number
     double newEnergy = 0;
-    int count = 0;          //how many times the parameters have been tweaked
+    int count = 0;          //number of times the parameters have been tweaked
     double *tempParams = new double[2]; //temporary values for the parameters
 
     while(count<maxIter)
@@ -111,15 +125,15 @@ void VMC::optimize(double *params, double range, int step,
             tempParams[paramToChange] += range/step; //increment parameter
         }
 
-        if(paramToChange == 0)
+        if(paramToChange > 0)
         {
-            paramToChange = 1;  //change parameter to be incremented
+            paramToChange -= 1;  //change parameter to be incremented
         }
         else
         {
-            paramToChange = 0;  //swap back to the first parameter
+            paramToChange = numParams - 1;  //swap back to the last parameter
             count++;
-            range /= 2;  //and decrese the range to increse resolution
+            range /= 2;         //and decrese the range to increse resolution
             if((100*count)%maxIter == 0)
             {
                 cout << (100*count)/maxIter << endl;

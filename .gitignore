@@ -8,6 +8,8 @@
 *.exe
 *.x
 *.dat
+P5/*.txt
+P5/*.pdf
 
 # Compiled Object files
 *.slo

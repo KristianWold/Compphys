@@ -11,6 +11,8 @@ using namespace std;
 using namespace chrono;
 using namespace arma;
 
+//Simple trial wave function and accompaying kinetic energy.
+//Potential energy is without coloumb term.
 //----------------------------------------------------------------------------
 inline double acceptAmp1(double* params, double omega, mat &r, vec &delta, int num)
 {
@@ -33,6 +35,8 @@ inline double localPotential1(double* params, double omega, mat &r)
 }
 //----------------------------------------------------------------------------
 
+//Trial wave function with Jastrow factor and accompaying kinetic energy.
+//Potential energy is with coloumb term.
 //----------------------------------------------------------------------------
 inline double acceptAmp2(double* params, double omega, mat &r, vec &delta, int num)
 {
@@ -68,25 +72,20 @@ inline double localPotential2(double* params, double omega, mat &r)
 }
 //----------------------------------------------------------------------------
 
+
+
 int main(int argc, char const *argv[]) {
-    int numCycles = atoi(argv[1]);
-    int preCycles = atoi(argv[2]);
-    double omega  = atof(argv[3]);
-    double alpha  = atof(argv[4]);
-    double beta   = atof(argv[5]);
 
-    double* params = new double[2];
-    params[0] = alpha;
-    params[1] = beta;
-
-    VMC solver(3, 2, &acceptAmp2, &localKinetic2, &localPotential2);
-
-    //solver.optimize(params, 0.6, 20, 20, numCycles, preCycles);
-    cout << params[0] << endl;
-    cout << params[1] << endl;
-    Result myResult = solver.solve(numCycles, preCycles, params, omega, true);
-    cout << myResult.E << endl;
-    cout << myResult.kinetic/myResult.potential << endl;
+    double* params = new double[1];
+    VMC solver1(3, 2, &acceptAmp1, &localKinetic1, &localPotential1);
+    ofstream myfile;
+    myfile.open("results/noninteracting.txt");
+    for(int i=0; i<=20; i++)
+    {
+        params[0] = 0.5 + 1./20*i;
+        Result myResult = solver1.solve(1e5, 1e3, params, 1, false);
+        myfile << params[0] << " " << myResult.E << " " << myResult.Var << "\n";
+    }
 
     return 0;
 }

@@ -32,8 +32,12 @@ class VMC
 public:
     myfunc1 acceptAmp;
     myfunc2 localKinetic, localPotential;
-    int numDim, numParticles, numCycles, accepted;
+    int numDim, numParticles, accepted;
+    int numCycles, preCycles;
     double kineticE, potentialE, k_E, p_E, E, E2, Var, R12, step;
+    double* params;
+    double omega;
+
     mat pos;
     vec delta;
 
@@ -42,9 +46,11 @@ public:
 
     VMC(int numDim, int numParticles, myfunc1 acceptAmp, myfunc2 localKinetic, myfunc2 localPotential);
 
+    void mcCycle();
+
     Result solve(int numCycles, int preCycles, double* params, double omega, bool writeToFile);
 
-    void optimize(double *params, double range, int step,
+    void optimize(double *params, int numParams, double range, int step,
                   int maxIter, int numCycles, int preCycles);
 };
 
