@@ -64,7 +64,7 @@ Result VMC::solve(int numCycles, int preCycles, double* params, double omega, bo
         }
     }
 
-    myfile.open("data.txt");
+    myfile.open("results/data.dat");
     for(int i=0; i<numCycles; i++)
     {
         mcCycle();
@@ -136,7 +136,7 @@ void VMC::optimize(double *params, int numParams, double range, int step,
             range /= 2;         //and decrese the range to increse resolution
             if((100*count)%maxIter == 0)
             {
-                cout << (100*count)/maxIter << endl;
+                cout << (100*count)/maxIter << '%' << endl;
             }
         }
     }
