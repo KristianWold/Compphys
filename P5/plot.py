@@ -14,7 +14,7 @@ params = {'legend.fontsize': 'x-large',
 plt.rcParams.update(params)
 plt.gcf().set_tight_layout(True)
 
-
+# Benchmarking for non-interacting case. Different alpha
 # ---------------------------------------------------------------------------
 filename = "results/noninteracting.txt"
 alpha = np.loadtxt(filename, usecols=0)
@@ -41,10 +41,10 @@ plt.grid()
 fig.savefig("./plots/noninteracting.pdf")
 # ---------------------------------------------------------------------------
 
+# Benchmarking for interacting case. Different alpha
 # ---------------------------------------------------------------------------
 filename = "results/interacting.txt"
 alpha = np.loadtxt(filename, usecols=0)
-x = np.linspace(alpha[0], alpha[-1], 1000)
 E = np.loadtxt(filename, usecols=1)
 Var = np.loadtxt(filename, usecols=2)
 
@@ -64,4 +64,42 @@ plt.legend(["MC simulation"])
 plt.grid()
 
 fig.savefig("./plots/interacting.pdf")
+# ---------------------------------------------------------------------------
+
+# Virial theorem for interacting and non-interacting case.
+# ---------------------------------------------------------------------------
+filename = "results/virial.txt"
+omega = np.loadtxt(filename, usecols=0)
+ratio1 = np.loadtxt(filename, usecols=1)
+ratio2 = np.loadtxt(filename, usecols=2)
+
+fig = plt.figure(figsize=(10, 8))
+
+plt.plot(omega, ratio1)
+plt.plot(omega, ratio2)
+plt.xlabel("$\\omega")
+plt.ylabel("$\\langle T \\rangle/\\langle V \\rangle$")
+plt.legend(["Non-interacting", "Interacting"])
+plt.grid()
+
+fig.savefig("./plots/virial.pdf")
+# ---------------------------------------------------------------------------
+
+# Electron cloud
+# ---------------------------------------------------------------------------
+filename = "results/data.dat"
+x = np.loadtxt(filename, usecols=0)
+y = np.loadtxt(filename, usecols=1)
+z = np.loadtxt(filename, usecols=2)
+
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+plt.plot(x, y, z, "o", alpha=0.3, markersize=0.3)
+plt.xlabel("$\\omega")
+plt.ylabel("$\\langle T \\rangle/\\langle V \\rangle$")
+plt.legend(["Non-interacting", "Interacting"])
+plt.grid()
+
+fig.savefig("./plots/electronCloud.pdf")
 # ---------------------------------------------------------------------------

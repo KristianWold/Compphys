@@ -77,6 +77,7 @@ int main(int argc, char const *argv[])
 {
     double* params1 = new double[2];
     double* params2 = new double[2];
+    vector<double> omega;
 //---------------------------------------------------------------------------
     cout << "Benchmarking non-interacting case" << endl;
     VMC solver1(3, 2, &acceptAmp1, &localKinetic1, &localPotential1);
@@ -150,19 +151,20 @@ int main(int argc, char const *argv[])
 //---------------------------------------------------------------------------
     cout << "Calculating mean seperation and energy for different omega, with Jastrow" << endl;
     myfile.open("results/interactionJastrow.txt");
-    myResult1 = solver3.solve(1e6, 1e3, params2, 0.05, false);
-    myResult2 = solver3.solve(1e6, 1e3, params2, 0.25, false);
-    myResult3 = solver3.solve(1e6, 1e3, params2, 1, false);
-    myfile << myResult1.E << " " << myResult2.E << " " << myResult3.E << endl;
-    myfile << myResult1.Var << " " << myResult2.Var << " " << myResult3.Var << endl;
-    myfile << myResult1.R12 << " " << myResult2.R12 << " " << myResult3.R12 << endl;
+    omega = {0.05, 0.25, 1};
+    for(int i=0; i<omega.size(); i++)
+    {
+        Result myResult = solver3.solve(1e6, 1e3, params1, omega[i], false);
+        myfile << omega[i] << " " << myResult1.E << " " << myResult1.Var << " "
+        << myResult1.R12 << "\n";
+    }
     myfile.close();
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
     cout << "Calculating ratio of kinetic and potential energy, both interacting and non-interacting cast" << endl;
     myfile.open("results/virial.txt");
-    vector<double> omega = {0.01, 0.05, 0.1, 0.5, 1};
+    omega = {0.01, 0.05, 0.1, 0.5, 1};
     params1[0] = 1;
     for(int i=0; i<omega.size(); i++)
     {
@@ -173,6 +175,11 @@ int main(int argc, char const *argv[])
 
     }
     myfile.close();
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+    cout << "Visualizing the electron cloud" << endl;
+    solver1.solve(1e6, 1e3, params1, 1, true);
 //---------------------------------------------------------------------------
 
     return 0;
