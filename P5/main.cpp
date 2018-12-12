@@ -154,9 +154,9 @@ int main(int argc, char const *argv[])
     omega = {0.05, 0.25, 1};
     for(int i=0; i<omega.size(); i++)
     {
-        Result myResult = solver3.solve(1e6, 1e3, params1, omega[i], false);
-        myfile << omega[i] << " " << myResult1.E << " " << myResult1.Var << " "
-        << myResult1.R12 << "\n";
+        Result myResult = solver3.solve(1e7, 1e3, params2, omega[i], false);
+        myfile << omega[i] << " " << myResult.E << " " << myResult.Var << " "
+        << myResult.R12 << "\n";
     }
     myfile.close();
 //---------------------------------------------------------------------------
@@ -179,7 +179,7 @@ int main(int argc, char const *argv[])
 
 //---------------------------------------------------------------------------
     cout << "Visualizing the electron cloud" << endl;
-    solver1.solve(1e6, 1e3, params1, 1, true);
+    solver1.solve(1e5, 1e3, params1, 1, true);
 //---------------------------------------------------------------------------
 
     return 0;

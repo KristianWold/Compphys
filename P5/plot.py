@@ -95,11 +95,11 @@ z = np.loadtxt(filename, usecols=2)
 fig = plt.figure(figsize=(10, 8))
 ax = fig.add_subplot(111, projection='3d')
 
-plt.plot(x, y, z, "o", alpha=0.3, markersize=0.3)
+plt.plot(x, y, z, "o", alpha=0.1, markersize=0.6)
 plt.xlabel("$\\omega")
 plt.ylabel("$\\langle T \\rangle/\\langle V \\rangle$")
 plt.legend(["Non-interacting", "Interacting"])
 plt.grid()
-
-fig.savefig("./plots/electronCloud.pdf")
+plt.show()
+fig.savefig("./plots/electronCloud.png")
 # ---------------------------------------------------------------------------
