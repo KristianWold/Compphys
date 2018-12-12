@@ -59,6 +59,7 @@ Result VMC::solve(int numCycles, int preCycles, double* params, double omega, bo
         if((i+1)%interval == 0)
         {
             //tweaks the step if accept rate is more or less than 0.5
+            //cout << double(accepted)/(numParticles*interval) << endl;
             step *= 2*double(accepted)/(numParticles*interval);
             accepted = 0;
         }

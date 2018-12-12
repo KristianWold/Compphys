@@ -23,11 +23,12 @@ main.x: main.o VMC.o
 VMC.o: classes/VMC.cpp
 	${CXX} ${CPPflags} -c $^
 
-test.x: test.o
-	${CXX} ${CPPflags} -o $@ $^
+test.x: test.o VMC.o
+	g++ ${CPPflags} -o $@ $^ ${INCL} ${LIB}
+	./test.x
 
-test.o: test.cpp
-	${CXX} ${CPPflags} -c $^
+test.o: classes/test.cpp
+	g++ ${CPPflags} -c $^ ${INCL} ${LIB}
 
 clean:
 	rm -f *.o *.txt *.x
